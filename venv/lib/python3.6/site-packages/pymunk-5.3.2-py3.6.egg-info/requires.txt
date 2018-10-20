@@ -1,0 +1,6 @@
+cffi
+
+[dev]
+pyglet
+pygame
+sphinx
