@@ -1,5 +1,6 @@
-import numpy
 from pyglfw.libapi import *
+
+
 
 if __name__ == '__main__':
     glfwInit()
