@@ -4,7 +4,7 @@ import time
 
 class Engine:
     def __init__(self):
-        source = oalOpen("test.wav")
+        source = oalOpen("audio/PlopXD.mp3")
 
         source.play()
 
