@@ -5,6 +5,10 @@ class System:
         self.engine = engine
         self.callbacks = {}
         self.settings = {'active': True}
+        self.init()
+
+    def init(self):
+        pass
 
     def add_settings(self, **kwargs):
         for key, value in kwargs.items():

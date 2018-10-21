@@ -10,6 +10,8 @@ from scripts import (
 
 from systems import (
     render_sys,
+    level_sys,
+    physics_sys,
 )
 
 
@@ -19,7 +21,7 @@ class Engine:
     '''
 
     def __init__(self):
-        self.create_window()
+        # self.create_window()
 
         self.input_proc = input_proc.InputProcessor(self)
         self.assets = asset_manager.AssetManager()
@@ -27,27 +29,22 @@ class Engine:
 
         self.systems = (
             render_sys.RenderSys(self),
+            level_sys.LevelSys(self),
+            physics_sys.PhysicsSys(self),
         )
 
+        self.dispatch(CB_LOAD_LEVEL, ['test_level'])
+
+
+        print('starting engine')
         self.running = True
         while self.running:
             dt = 1.0
 
             self.dispatch(CB_UPDATE, [dt])
-            print('update')
 
     def create_window(self):
-        glfwInit()
-
-        major, mintor, rev = glfwGetVersion()
-        window = glfwCreateWindow(640, 480, b'GLFW Window', None, None)
-
-        while not glfwWindowShouldClose(window):
-            glfwPollEvents()
-            glfwSwapBuffers(window)
-
-        glfwDestroyWindow(window)
-        glfwTerminate()
+        pass
 
     def dispatch(self, cb, args):
         for s in self.systems:
