@@ -36,7 +36,6 @@ if __name__ == '__main__':
     vao = createMesh(quadVertices, quadNormals, quadIndices)
 
     glViewport(0, 0, width, height)
-
     glClearColor(0, 0, 0, 1)
 
     while not glfwWindowShouldClose(window):
