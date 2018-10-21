@@ -24,7 +24,6 @@ class Engine:
     def __init__(self):
         self.ecs_data = ecs.ECS()
 
-
         self.create_window()
 
         self.systems = (

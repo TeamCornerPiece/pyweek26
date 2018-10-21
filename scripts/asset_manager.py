@@ -1,4 +1,5 @@
 from gl import *
+from scripts import objloader
 
 
 class AssetManager:
@@ -8,9 +9,6 @@ class AssetManager:
 
     def __init__(self):
         self.meshes = {}
-        self.mesh_ids = {}
-        self.mesh_count = 0
-
         self.textures = {}
 
         quadVertices = np.array([-0.5, -0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, 0.5, 0.5, 0], np.float32)
@@ -19,3 +17,15 @@ class AssetManager:
 
         self.quad_vao = createMesh(quadVertices, quadNormals, quadIndices)
         self.len_quad_indices = len(quadIndices)
+
+    def get_mesh_id(self, filename: str):
+        mesh_id = hash(filename)
+        if mesh_id not in self.meshes:
+            self.meshes[mesh_id] = []
+
+            obj = objloader.ObjFile(filename)
+            for o in obj.objects:
+                self.meshes[mesh_id].append((createMesh(o.vertices, o.normals, o.indices),
+                                             len(o.indices)))
+
+        return mesh_id

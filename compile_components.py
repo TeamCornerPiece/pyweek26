@@ -30,6 +30,7 @@ write_line('# COMPONENT CONSTANTS\n\n')
 
 add_component('TRANSFORM', ['X', 'Y', 'Z', 'PITCH', 'YAW', 'SX', 'SY', 'SZ'])
 add_component('CAMERA', ['FOV'])
+add_component('MESH', ['ID'])
 
 write_line('# SIZE INFORMATION\n\nCOMP_SIZES = {s}\nCOMP_COUNT = {c}\nENTITY = COMP_COUNT\n'.format(s=COMP_SIZES,
                                                                                                     c=COMP_COUNT))
