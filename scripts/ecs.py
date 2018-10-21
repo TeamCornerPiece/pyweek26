@@ -28,7 +28,7 @@ class ECS:
             for ent_id, comp_ids in self.data[ENTITY].items():
                 for comp_type in comp_types:
                     assert comp_type < COMP_COUNT, 'invalid component'
-                    if comp_ids[comp_type] > 0:
+                    if comp_ids[comp_type] < 0:
                         break
                 else:
                     yield ent_id
@@ -71,9 +71,8 @@ class ECS:
         assert ent_id in self.data[ENTITY], 'invalid ent_id'
         assert comp_type < COMP_COUNT, 'invalid component'
         comp_id = self.data[ENTITY][ent_id][comp_type]
-        comp_data = self.data[comp_type][comp_id]
-        if comp_data[IS_ACTIVE]:
-            return comp_data[DATA_START:]
+        if comp_id >= 0:
+            return self.data[comp_type][comp_id]
 
     def set_component_data(self, ent_id: int, comp_type: int, *attrs, **named_attrs):
         assert ent_id in self.data[ENTITY], 'invalid ent_id'
@@ -83,9 +82,9 @@ class ECS:
         assert comp_id >= 0, 'entity does not have component of that type'
 
         for index, value in enumerate(attrs):
-            self.data[comp_type][comp_id][index + 2] = value
+            self.data[comp_type][comp_id][index] = value
         for index, value in named_attrs.items():
-            self.data[comp_type][comp_id][eval(index) + 2] = value
+            self.data[comp_type][comp_id][eval(index)] = value
 
     def set_active(self, ent_id: int, comp_type: int, active: bool):
         assert ent_id in self.data[ENTITY], 'invalid ent_id'
