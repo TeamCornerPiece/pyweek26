@@ -1,5 +1,5 @@
-from gl import *
 from scripts import objloader
+from gl import *
 
 
 class AssetManager:
