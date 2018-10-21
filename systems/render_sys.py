@@ -70,7 +70,3 @@ class RenderSys(System):
                 for vao, index_count in vao_data:
                     glBindVertexArray(vao)
                     glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, None)
-
-            # glBindVertexArray(self.engine.assets.quad_vao)
-            # glDrawElements(GL_TRIANGLES, self.engine.assets.len_quad_indices,
-            #                GL_UNSIGNED_INT, None)

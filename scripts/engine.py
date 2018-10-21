@@ -11,7 +11,6 @@ from scripts import (
 
 from systems import (
     render_sys,
-    physics_sys,
     level_sys,
 )
 
@@ -34,7 +33,6 @@ class Engine:
         self.systems = (
             render_sys.RenderSys(self),
             level_sys.LevelSys(self),
-            physics_sys.PhysicsSys(self),
         )
 
         self.assets = asset_manager.AssetManager()
