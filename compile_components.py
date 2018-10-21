@@ -32,6 +32,8 @@ add_component('TRANSFORM', ['X', 'Y', 'Z', 'PITCH', 'YAW', 'SX', 'SY', 'SZ'])
 add_component('CAMERA', ['FOV', 'NEAR', 'FAR'])
 add_component('MESH', ['ID'])
 add_component('INPUT', ['ID'])
+add_component('PLAYER', ['ACCEL_FORCE', 'ACCEL_INPUT'])
+add_component('SHAPE', ['BODY_ID', 'DX', 'DY', 'TYPE', 'MASS', 'RADIUS', 'SIZE_X', 'SIZE_Y', 'ELASTICITY', 'FRICTION'])
 
 write_line('# SIZE INFORMATION\n\nCOMP_SIZES = {s}\nCOMP_COUNT = {c}\nENTITY = COMP_COUNT\n'.format(s=COMP_SIZES,
                                                                                                     c=COMP_COUNT))

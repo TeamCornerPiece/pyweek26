@@ -79,7 +79,7 @@ class ECS:
         assert comp_id >= 0, 'entity does not have component of that type'
 
         for index, value in enumerate(attrs):
-            self.data[comp_type][comp_id][index] = value
+            self.data[comp_type][comp_id][index+2] = value
         for index, value in named_attrs.items():
             self.data[comp_type][comp_id][eval(index)] = value
 

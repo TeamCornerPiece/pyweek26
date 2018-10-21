@@ -9,7 +9,6 @@ def hash_filename(filename):
     return random.randint(1000000, 9999999)
 
 
-
 class AssetManager:
     '''
     Handles loading and saving assets used in the game
@@ -32,7 +31,6 @@ class AssetManager:
         mesh_id = hash_filename(filename)
         if mesh_id not in self.meshes:
             self.loaded_filenames.append(filename)
-
             self.meshes[mesh_id] = []
 
             obj = objloader.ObjFile(filename)

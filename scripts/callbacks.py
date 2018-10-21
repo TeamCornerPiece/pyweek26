@@ -9,4 +9,8 @@
     CB_MOUSE_UP,
     CB_MOUSE_MOVE,
 
-) = range(9)
+    CB_ADD_PHYSICS_ENT, # ent_id: int
+
+    CB_PLAYER_SET_ACCEL, # value: float, controller_id: int
+
+) = range(11)

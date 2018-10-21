@@ -54,9 +54,9 @@ class RenderSys(System):
 
             view = glm.mat4(1.0)
             view = glm.rotate(view, trans_data[TRANSFORM_YAW], glm.vec3(0.0, 1.0, 0.0))
-            # view = glm.rotate(view, trans_data[TRANSFORM_PITCH], glm.vec3(1.0, 0.0, 0.0))
+            view = glm.rotate(view, trans_data[TRANSFORM_PITCH], glm.vec3(1.0, 0.0, 0.0))
             cam_pos = glm.vec3(trans_data[TRANSFORM_X:TRANSFORM_Z + 1])
-            view = glm.translate(view, cam_pos)
+            view = glm.translate(view, -cam_pos)
 
             # forward = euclidean(2 * math.pi * .5, 0)
             # eye = glm.vec3(0, 0, .3)
@@ -74,8 +74,15 @@ class RenderSys(System):
                 vao_data = self.engine.assets.get_mesh_data(mesh_data[MESH_ID])
 
                 model = glm.mat4(1.0)
-                model = glm.rotate(model, 90 / 57.3, glm.vec3(0, 1, 0))
-                model = glm.scale(model, glm.vec3(1))
+
+                trans_data = ecs_data.get_component_data(ent_id, COMP_TRANSFORM)
+                if trans_data:
+                    model_pos = glm.vec3(trans_data[TRANSFORM_X:TRANSFORM_Z + 1])
+                    model_scale = glm.vec3(trans_data[TRANSFORM_SX:TRANSFORM_SZ + 1])
+                    model = glm.translate(model, model_pos)
+                    model = glm.rotate(model, trans_data[TRANSFORM_YAW], glm.vec3(0, 1, 0))
+                    model = glm.scale(model, model_scale)
+
                 glUniformMatrix4fv(self.model_loc, 1, GL_FALSE, glm.value_ptr(model))
 
                 for vao, index_count in vao_data:
