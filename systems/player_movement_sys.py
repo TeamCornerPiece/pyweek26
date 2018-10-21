@@ -1,4 +1,3 @@
-
 from scripts import (
     ecs,
 )
@@ -20,12 +19,10 @@ class PlayerMovement(System):
         }
 
     def update(self, ecs_data: ecs.ECS, dt: float):
-        for ent_id in ecs_data.get_entities(COMP_PLAYER, COMP_RIGIDBODY):
+        for ent_id in ecs_data.get_entities(COMP_PLAYER, COMP_SHAPE):
             player_data = ecs_data.get_component_data(ent_id, COMP_PLAYER)
             if player_data:
                 force = player_data[PLAYER_ACCEL_INPUT] * player_data[PLAYER_ACCEL_FORCE]
-
-
 
     def player_accel(self, ecs_data: ecs.ECS, value: float, controller_id: int):
         for ent_id in ecs_data.get_entities(COMP_PLAYER, COMP_INPUT):

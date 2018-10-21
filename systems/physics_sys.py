@@ -17,12 +17,15 @@ class PhysicsSys(System):
     def init(self):
         self.space = pymunk.Space()
 
-        self.bodies = {}
-        self.body_index = 0
+        self.shapes = {}
+        self.shape_index = 0
 
         self.callbacks = {
             CB_UPDATE: self.update,
             CB_ADD_PHYSICS_ENT: self.add_physics_ent,
+            CB_REMOVE_PHYSICS_ENT: self.remove_shape,
+            CB_LOAD_LEVEL: self.load_level,
+            CB_SAVE_LEVEL: self.save_level,
         }
 
         self.box_verts = ((-.5, -.5),
@@ -36,27 +39,29 @@ class PhysicsSys(System):
         for ent_id in ecs_data.get_entities(COMP_SHAPE, COMP_TRANSFORM):
             shape_data = ecs_data.get_component_data(ent_id, COMP_SHAPE)
             if shape_data:
-                rbody_id = shape_data[SHAPE_BODY_ID]
+                shape_id = shape_data[SHAPE_ID]
                 mass = shape_data[SHAPE_MASS]
-                if rbody_id >= 0 and mass > 0:
-                    body = self.bodies.get(rbody_id)
-                    if body:
+                if shape_id >= 0 and mass > 0:
+                    shape = self.shapes.get(shape_id)
+                    if shape and shape.body is not self.space.static_body:
                         trans_data = ecs_data.get_component_data(ent_id,
                                                                  COMP_TRANSFORM)
                         if trans_data:
-                            trans_data[TRANSFORM_X] = body.position.x
-                            trans_data[TRANSFORM_Z] = body.position.y
-                            trans_data[TRANSFORM_YAW] = -body.angle
+                            trans_data[TRANSFORM_X] = shape.body.position.x
+                            trans_data[TRANSFORM_Z] = shape.body.position.y
+                            trans_data[TRANSFORM_YAW] = -shape.body.angle
 
     def add_physics_ent(self, ecs_data: ecs.ECS, ent_id: int):
         shape_data = ecs_data.get_component_data(ent_id, COMP_SHAPE)
 
         if shape_data:
             pos = (0, 0)
+            angle = 0
 
             trans_data = ecs_data.get_component_data(ent_id, COMP_TRANSFORM)
             if trans_data:
                 pos = trans_data[TRANSFORM_X], trans_data[TRANSFORM_Z]
+                angle = trans_data[TRANSFORM_YAW]
 
             mass = shape_data[SHAPE_MASS]
             if mass < 0:
@@ -96,6 +101,7 @@ class PhysicsSys(System):
                                                          tx=pos[0],
                                                          ty=pos[1])
                                         )
+                    # todo: rotate transform to angle ^^^
                 else:
                     shape = pymunk.Poly.create_box(body, (size_x, size_y))
                     shape.mass = mass
@@ -103,12 +109,13 @@ class PhysicsSys(System):
             if mass >= 0:
                 self.space.add(body)
                 body.position = pos
+                body.angle = -angle
                 body.velocity = shape_data[SHAPE_DX:SHAPE_DY + 1]
-                print(shape_data[SHAPE_DX:SHAPE_DY + 1])
+                body.angular_velocity = shape_data[SHAPE_DA]
 
-                self.bodies[self.body_index] = body
-                shape_data[SHAPE_BODY_ID] = self.body_index
-                self.body_index += 1
+            self.shapes[self.shape_index] = shape
+            shape_data[SHAPE_ID] = self.shape_index
+            self.shape_index += 1
 
             elasticity = shape_data[SHAPE_ELASTICITY]
             if elasticity < 0:
@@ -122,5 +129,38 @@ class PhysicsSys(System):
             shape.friction = friction
             self.space.add(shape)
 
-            print('ent_id: {}'.format(ent_id))
-            print('shape: {}'.format(shape_data))
+    def remove_shape(self, ecs_data: ecs.ECS, ent_id: int):
+        shape_data = ecs_data.get_component_data(ent_id, COMP_SHAPE)
+        print(shape_data)
+        if shape_data:
+            shape_id = shape_data[SHAPE_ID]
+            shape = self.shapes.get(shape_id)
+            print(shape)
+            if shape:
+                if shape.body is not self.space.static_body:
+                    self.space.remove(shape.body)
+                self.space.remove(shape)
+                del self.shapes[shape_id]
+
+    def load_level(self, ecs_data: ecs.ECS, filename: str):
+        self.space.remove(self.space.bodies,
+                          self.space.shapes,
+                          self.space.constraints)
+        self.shapes = {}
+        self.shape_index = 0
+
+        for ent_id in ecs_data.get_entities(COMP_SHAPE):
+            shape_data = ecs_data.get_component_data(ent_id, COMP_SHAPE)
+            if shape_data:
+                self.add_physics_ent(ecs_data, ent_id)
+
+    def save_level(self, ecs_data: ecs.ECS, filename: str):
+        for ent_id in ecs_data.get_entities(COMP_SHAPE):
+            shape_data = ecs_data.get_component_data(ent_id, COMP_SHAPE)
+            if shape_data:
+                shape = self.shapes.get(shape_data[SHAPE_ID])
+                if shape:
+                    shape_data[SHAPE_DX] = shape.body.velocity.x
+                    shape_data[SHAPE_DY] = shape.body.velocity.y
+                    shape_data[SHAPE_DA] = shape.body.angular_velocity
+

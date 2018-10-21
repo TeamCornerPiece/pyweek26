@@ -96,3 +96,7 @@ class ECS:
                 self.member_count[data_type] = max(values.keys()) + 1
             else:
                 self.member_count[data_type] = 0
+
+    def clear_data(self):
+        self.data = [{} for _ in range(COMP_COUNT + 1)]
+        self.member_count = [0 for _ in range(COMP_COUNT + 1)]

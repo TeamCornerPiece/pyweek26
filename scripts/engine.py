@@ -44,16 +44,30 @@ class Engine:
         self.assets = asset_manager.AssetManager()
 
         levels.test_level(self)
-        self.save('levels/test_level.level')
+        # self.load('levels/test_level.level')
 
-        # self.dispatch(CB_LOAD_LEVEL, ['levels/test_level.level'])
+        # self.dispatch(CB_SAVE_LEVEL, ['levels/test_level.level'])
+        self.dispatch(CB_LOAD_LEVEL, ['levels/test_level.level'])
         self.dispatch(CB_WINDOW_RESIZE, [w, h])
 
+        total_time = 0
+        saved = False
         self.running = True
         while self.running and not glfwWindowShouldClose(self.window):
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
             dt = .01
+            # if total_time < 10:
+            #     total_time += dt
+            #     if total_time >= 10:
+            #         if saved:
+            #             print('load')
+            #             self.dispatch(CB_LOAD_LEVEL, ['levels/test_level.level'])
+            #         else:
+            #             print('save')
+            #             self.dispatch(CB_SAVE_LEVEL, ['levels/test_level.level'])
+            #             saved = True
+            #         total_time = 0
 
             self.input_proc.update(dt)
             self.dispatch(CB_UPDATE, [dt])
@@ -83,13 +97,16 @@ class Engine:
         glCullFace(GL_BACK)
         # glCullFace(GL_FRONT)
 
-    def dispatch(self, cb, args):
+    def dispatch(self, cb, args=[]):
         if cb is CB_LOAD_LEVEL:
             assert self.load(*args), 'failed to load {}'.format(args[0])
 
         for s in self.systems:
             if s.settings.get('active', False) and cb in s.callbacks:
                 s.callbacks[cb](self.ecs_data, *args)
+
+        if cb is CB_SAVE_LEVEL:
+            self.save(*args)
 
     def load(self, filename):
         if os.path.exists(filename):
@@ -98,6 +115,7 @@ class Engine:
                 for fn in required_meshes:
                     self.assets.get_mesh_id(fn)
                 self.ecs_data.set_data(game_data)
+
             return True
 
     def save(self, filename):
