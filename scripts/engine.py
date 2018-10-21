@@ -22,9 +22,14 @@ class Engine:
     '''
 
     def __init__(self):
+
+        w = 1280
+        h = 720
+
         self.ecs_data = ecs.ECS()
 
-        self.create_window()
+        self.create_window(w, h)
+        self.input_proc = input_proc.InputProcessor(self)
 
         self.systems = (
             render_sys.RenderSys(self),
@@ -32,16 +37,19 @@ class Engine:
             physics_sys.PhysicsSys(self),
         )
 
-        self.input_proc = input_proc.InputProcessor(self)
         self.assets = asset_manager.AssetManager()
 
         self.dispatch(CB_LOAD_LEVEL, ['test_level'])
+        self.dispatch(CB_WINDOW_RESIZE, [w, h])
 
         self.running = True
         while self.running  and not glfwWindowShouldClose(self.window):
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-            self.dispatch(CB_UPDATE, [1.0])
+            dt = 1.0
+
+            self.input_proc.update(dt)
+            self.dispatch(CB_UPDATE, [dt])
 
             glfwPollEvents()
             glfwSwapBuffers(self.window)
@@ -49,22 +57,25 @@ class Engine:
         glfwDestroyWindow(self.window)
         glfwTerminate()
 
-    def create_window(self):
+    def create_window(self, w, h):
         glfwInit()
 
         major, mintor, rev = glfwGetVersion()
 
-        width = 1280
-        height = 720
-        aspect = float(width) / height
 
-        self.window = glfwCreateWindow(width, height, b'Hello World!', None, None)
+        aspect = float(w) / h
+
+        self.window = glfwCreateWindow(w, h, b'Hello World!', None, None)
         glfwMakeContextCurrent(self.window)
 
-        glViewport(0, 0, width, height)
+        glViewport(0, 0, w, h)
 
         glClearColor(0, 0, 0, 1)
 
+        glEnable(GL_DEPTH_TEST)
+        glEnable(GL_CULL_FACE)
+        glCullFace(GL_BACK)
+        # glCullFace(GL_FRONT)
 
 
     def dispatch(self, cb, args):

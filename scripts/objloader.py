@@ -47,7 +47,8 @@ class ObjFile:
                 values = line.split()
                 if values:
                     if values[0] == 'mtllib':
-                        self.mtl = MTL('{}/{}'.format(self.directory, values[1]))
+                        pass
+                        # self.mtl = MTL('{}/{}'.format(self.directory, values[1]))
 
                     elif values[0] == 'o':
                         self.finish_object()

@@ -24,8 +24,14 @@ class AssetManager:
             self.meshes[mesh_id] = []
 
             obj = objloader.ObjFile(filename)
-            for o in obj.objects:
-                self.meshes[mesh_id].append((createMesh(o.vertices, o.normals, o.indices),
+            for o in obj.objects.values():
+                self.meshes[mesh_id].append((createMesh(np.array(o.vertices, np.float32).flatten(),
+                                                        np.array(o.normals, np.float32).flatten(),
+                                                        np.array(o.indices, np.uint32).flatten()),
                                              len(o.indices)))
 
         return mesh_id
+
+    def get_mesh_data(self, mesh_id):
+        assert mesh_id in self.meshes, 'invalid mesh_id'
+        return self.meshes[mesh_id]

@@ -1,9 +1,7 @@
 from OpenGL.GL import *
 
-import numpy as np
 
-
-class FrameBuffer(object):
+class FrameBuffer:
     def __init__(self):
         self.fbo = glGenFramebuffers(1)
         glBindFramebuffer(GL_FRAMEBUFFER, self.fbo)

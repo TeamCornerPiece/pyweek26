@@ -18,7 +18,9 @@ class LevelSys(System):
         ecs_data.add_components(ent_id, COMP_TRANSFORM, COMP_MESH)
         # get/set mesh component data
         mesh_data = ecs_data.get_component_data(ent_id, COMP_MESH)
-        mesh_data[MESH_ID] = self.engine.assets.get_mesh_id('FILENAME.obj')
+        # mesh_data[MESH_ID] = self.engine.assets.get_mesh_id('models\\test_sphere.obj')
+        mesh_data[MESH_ID] = self.engine.assets.get_mesh_id('models\\chaynik\\Chaynik.obj')
+
 
         # add entity for camera
         ent_id = ecs_data.add_entity()
