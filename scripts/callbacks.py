@@ -1,4 +1,5 @@
 (
-    CB_UPDATE,
+    CB_UPDATE,      # dt: float
+    CB_LOAD_LEVEL,  # level_name: str
 
-) = range(1)
+) = range(2)

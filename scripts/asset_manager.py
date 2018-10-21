@@ -4,4 +4,10 @@ class AssetManager:
     '''
 
     def __init__(self):
-        pass
+        self.meshes = {}
+        self.mesh_ids = {}
+        self.mesh_count = 0
+
+        self.textures = {}
+
+
