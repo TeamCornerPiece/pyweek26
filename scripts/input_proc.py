@@ -119,7 +119,6 @@ def on_key(window, key, scancode, action, mods):
 def on_mouse_button(window, button, action, mods):
     if action is 1:
         glfwGetWindowUserPointer(window).on_mouse_down(button)
-
     elif action is 0:
         glfwGetWindowUserPointer(window).on_mouse_up(button)
 

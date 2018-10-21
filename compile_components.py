@@ -29,8 +29,9 @@ def add_component(name: str, args: list):
 write_line('# COMPONENT CONSTANTS\n\n')
 
 add_component('TRANSFORM', ['X', 'Y', 'Z', 'PITCH', 'YAW', 'SX', 'SY', 'SZ'])
-add_component('CAMERA', ['FOV'])
+add_component('CAMERA', ['FOV', 'NEAR', 'FAR'])
 add_component('MESH', ['ID'])
+add_component('INPUT', ['ID'])
 
 write_line('# SIZE INFORMATION\n\nCOMP_SIZES = {s}\nCOMP_COUNT = {c}\nENTITY = COMP_COUNT\n'.format(s=COMP_SIZES,
                                                                                                     c=COMP_COUNT))

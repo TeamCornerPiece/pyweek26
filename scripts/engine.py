@@ -1,3 +1,6 @@
+import os
+import pickle
+
 from pyglfw.libapi import *
 from gl import *
 
@@ -7,6 +10,7 @@ from scripts import (
     input_proc,
     asset_manager,
     ecs,
+    levels,
 )
 
 from systems import (
@@ -21,7 +25,6 @@ class Engine:
     '''
 
     def __init__(self):
-
         w = 1280
         h = 720
 
@@ -37,11 +40,14 @@ class Engine:
 
         self.assets = asset_manager.AssetManager()
 
+        # levels.test_level(self)
+        self.load('levels/test_level.level')
+
         self.dispatch(CB_LOAD_LEVEL, ['test_level'])
         self.dispatch(CB_WINDOW_RESIZE, [w, h])
 
         self.running = True
-        while self.running  and not glfwWindowShouldClose(self.window):
+        while self.running and not glfwWindowShouldClose(self.window):
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
             dt = 1.0
@@ -60,10 +66,9 @@ class Engine:
 
         major, mintor, rev = glfwGetVersion()
 
-
         aspect = float(w) / h
 
-        self.window = glfwCreateWindow(w, h, b'Hello World!', None, None)
+        self.window = glfwCreateWindow(w, h, b'GLFW Window', None, None)
         glfwMakeContextCurrent(self.window)
 
         glViewport(0, 0, w, h)
@@ -75,8 +80,20 @@ class Engine:
         glCullFace(GL_BACK)
         # glCullFace(GL_FRONT)
 
-
     def dispatch(self, cb, args):
         for s in self.systems:
             if s.settings.get('active', False) and cb in s.callbacks:
                 s.callbacks[cb](self.ecs_data, *args)
+
+    def load(self, filename):
+        if os.path.exists(filename):
+            with open(filename, 'rb') as f:
+                required_meshes, ecs_data = pickle.load(f)
+                for fn in required_meshes:
+                    self.assets.get_mesh_id(fn)
+                self.ecs_data.set_data(ecs_data)
+
+    def save(self, filename):
+        with open(filename, 'wb') as f:
+            pickle.dump((self.assets.loaded_filenames,
+                         self.ecs_data.data), f)

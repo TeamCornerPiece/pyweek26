@@ -50,10 +50,21 @@ class RenderSys(System):
         for cam_ent_id in ecs_data.get_entities(COMP_CAMERA, COMP_TRANSFORM):
 
             cam_data = ecs_data.get_component_data(cam_ent_id, COMP_CAMERA)
-            forward = euclidean(2 * math.pi * .5, 0)
-            eye = glm.vec3(0, 0, .3)
-            view = glm.lookAt(eye, eye + forward, glm.vec3(0, 1, 0))
-            proj = glm.perspective(cam_data[CAMERA_FOV], self.w / float(self.h), 0.01, 1000.0)
+            trans_data = ecs_data.get_component_data(cam_ent_id, COMP_TRANSFORM)
+
+            view = glm.mat4(1.0)
+            view = glm.rotate(view, trans_data[TRANSFORM_YAW], glm.vec3(0.0, 1.0, 0.0))
+            # view = glm.rotate(view, trans_data[TRANSFORM_PITCH], glm.vec3(1.0, 0.0, 0.0))
+            cam_pos = glm.vec3(trans_data[TRANSFORM_X:TRANSFORM_Z + 1])
+            view = glm.translate(view, cam_pos)
+
+            # forward = euclidean(2 * math.pi * .5, 0)
+            # eye = glm.vec3(0, 0, .3)
+            # view = glm.lookAt(eye, eye + forward, glm.vec3(0, 1, 0))
+            proj = glm.perspective(cam_data[CAMERA_FOV],
+                                   self.w / float(self.h),
+                                   cam_data[CAMERA_NEAR],
+                                   cam_data[CAMERA_FAR])
 
             glUniformMatrix4fv(self.view_loc, 1, GL_FALSE, glm.value_ptr(view))
             glUniformMatrix4fv(self.proj_loc, 1, GL_FALSE, glm.value_ptr(proj))

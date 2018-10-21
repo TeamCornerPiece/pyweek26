@@ -1,6 +1,3 @@
-import os
-import pickle
-
 from scripts.components import *
 
 ENT_ID, IS_ACTIVE = range(2)
@@ -92,16 +89,10 @@ class ECS:
         comp_id = self.data[ENTITY][ent_id][comp_type]
         self.data[comp_type][comp_id][IS_ACTIVE] = int(active)
 
-    def load(self, filename):
-        if os.path.exists(filename):
-            with open(filename, 'rb') as f:
-                self.data = pickle.load(f)
-                for data_type, values in enumerate(self.data):
-                    if values:
-                        self.member_count[data_type] = max(values.keys()) + 1
-                    else:
-                        self.member_count[data_type] = 0
-
-    def save(self, filename):
-        with open(filename, 'wb') as f:
-            pickle.dump(self.data, f)
+    def set_data(self, data):
+        self.data = data
+        for data_type, values in enumerate(self.data):
+            if values:
+                self.member_count[data_type] = max(values.keys()) + 1
+            else:
+                self.member_count[data_type] = 0

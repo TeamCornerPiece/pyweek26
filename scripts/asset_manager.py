@@ -1,5 +1,13 @@
+import random
+
 from gl import *
 from scripts import objloader
+
+
+def hash_filename(filename):
+    random.seed(filename)
+    return random.randint(1000000, 9999999)
+
 
 
 class AssetManager:
@@ -11,6 +19,8 @@ class AssetManager:
         self.meshes = {}
         self.textures = {}
 
+        self.loaded_filenames = []
+
         quadVertices = np.array([-0.5, -0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, 0.5, 0.5, 0], np.float32)
         quadNormals = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], np.float32)
         quadIndices = np.array([0, 1, 2, 2, 1, 3], np.uint32)
@@ -19,8 +29,10 @@ class AssetManager:
         self.len_quad_indices = len(quadIndices)
 
     def get_mesh_id(self, filename: str):
-        mesh_id = hash(filename)
+        mesh_id = hash_filename(filename)
         if mesh_id not in self.meshes:
+            self.loaded_filenames.append(filename)
+
             self.meshes[mesh_id] = []
 
             obj = objloader.ObjFile(filename)
