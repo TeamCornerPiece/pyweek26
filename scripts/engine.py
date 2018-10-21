@@ -1,5 +1,3 @@
-
-
 class Engine:
     '''
     Runs the application

@@ -1,4 +1,3 @@
-
 class AssetManager:
     '''
     Handles loading and saving assets used in the game
