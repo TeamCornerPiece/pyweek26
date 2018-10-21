@@ -4,7 +4,7 @@
 
 from OpenGL.GL import *
 import numpy as np
-import glm
+
 
 def createShader(string: str, type: any):
     shader = glCreateShader(type)

@@ -1,6 +1,7 @@
 from pyglfw.libapi import *
 import math
 from gl import *
+import glm
 
 quadVertices = np.array([-0.5, -0.5, 0, 0.5, -0.5, 0, -0.5,  0.5, 0, 0.5,  0.5, 0], np.float32)
 quadNormals = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], np.float32)
@@ -29,7 +30,6 @@ if __name__ == '__main__':
 
     vertexShader = createShader(open('shaders/default.vert', 'r').read(), GL_VERTEX_SHADER)
     fragmentShader = createShader(open('shaders/default.frag', 'r').read(), GL_FRAGMENT_SHADER)
-
     program = createPipeline([vertexShader, fragmentShader])
     glUseProgram(program)
 
@@ -45,7 +45,9 @@ if __name__ == '__main__':
         eye = glm.vec3(0, 0, 10)
         view = glm.lookAt(eye, eye + forward, glm.vec3(0, 1, 0))
         proj = glm.perspective(glm.radians(75), aspect, 0.1, 1000.0)
+        model = glm.mat4(1)
 
+        glUniformMatrix4fv(glGetUniformLocation(program, 'model'), 1, GL_FALSE, glm.value_ptr(model))
         glUniformMatrix4fv(glGetUniformLocation(program, 'view'), 1, GL_FALSE, glm.value_ptr(view))
         glUniformMatrix4fv(glGetUniformLocation(program, 'proj'), 1, GL_FALSE, glm.value_ptr(proj))
 
