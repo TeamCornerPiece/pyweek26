@@ -103,7 +103,7 @@ class InputProcessor:
         self.last_x = x
         self.last_y = y
 
-        self.engine.dispatch(CB_CAMERA_MOVE, (dy * .01, dx * .01, 0))
+        self.engine.dispatch(CB_CAMERA_TURN, (dy * .01, dx * .01, 0))
         self.engine.dispatch(CB_MOUSE_MOVE, (x, y, dx, dy))
 
 

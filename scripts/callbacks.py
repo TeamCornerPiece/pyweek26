@@ -10,7 +10,7 @@
     CB_MOUSE_DOWN,
     CB_MOUSE_UP,
     CB_MOUSE_MOVE,
-    CB_CAMERA_MOVE, # pitch: float, yaw: float, controller_id: int
+    CB_CAMERA_TURN,  # pitch: float, yaw: float, controller_id: int
 
     CB_ADD_PHYSICS_ENT,  # ent_id: int
     CB_REMOVE_PHYSICS_ENT,  # ent_id: int
