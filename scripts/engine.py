@@ -18,7 +18,6 @@ from systems import (
     render_sys,
     level_sys,
     physics_sys,
-    camera_movement_sys,
 )
 
 
@@ -40,13 +39,12 @@ class Engine:
             render_sys.RenderSys(self),
             level_sys.LevelSys(self),
             physics_sys.PhysicsSys(self),
-            camera_movement_sys.CameraMovement(self)
         )
 
         self.assets = asset_manager.AssetManager()
 
         levels.test_level(self)
-        # self.load('levels/test_level.level')
+        #self.load('levels/test_level.level')
 
         # self.dispatch(CB_SAVE_LEVEL, ['levels/test_level.level'])
         # self.dispatch(CB_LOAD_LEVEL, ['levels/test_level.level'])
@@ -54,25 +52,35 @@ class Engine:
 
         total_time = 0
         saved = False
-        self.running = True
-        while self.running and not glfwWindowShouldClose(self.window):
+
+        time = glfwGetTime()
+        lastTime = time
+        deltaTime = 0.0
+
+
+        while not glfwWindowShouldClose(self.window):
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-            dt = .01
-            # if total_time < 10:
-            #     total_time += dt
-            #     if total_time >= 10:
-            #         if saved:
-            #             print('load')
-            #             self.dispatch(CB_LOAD_LEVEL, ['levels/test_level.level'])
-            #         else:
-            #             print('save')
-            #             self.dispatch(CB_SAVE_LEVEL, ['levels/test_level.level'])
-            #             saved = True
-            #         total_time = 0
 
-            self.input_proc.update(dt)
-            self.dispatch(CB_UPDATE, [dt])
+            lastTime = time
+            time = glfwGetTime()
+            deltaTime = time - lastTime
+
+
+            if total_time < 10:
+                total_time += deltaTime
+                if total_time >= 10:
+                    if saved:
+                        print('load')
+                        self.dispatch(CB_LOAD_LEVEL, ['levels/test_level.level'])
+                    else:
+                        print('save')
+                        self.dispatch(CB_SAVE_LEVEL, ['levels/test_level.level'])
+                        saved = True
+                    total_time = 0
+
+            self.input_proc.update(deltaTime)
+            self.dispatch(CB_UPDATE, [deltaTime])
 
             glfwPollEvents()
             glfwSwapBuffers(self.window)
@@ -110,6 +118,7 @@ class Engine:
         if cb is CB_SAVE_LEVEL:
             self.save(*args)
 
+
     def load(self, filename):
         if os.path.exists(filename):
             with open(filename, 'rb') as f:
@@ -120,7 +129,8 @@ class Engine:
 
             return True
 
+
     def save(self, filename):
-        with open(filename, 'wb') as f:
+        with open(filename, 'wb+') as f:
             pickle.dump((self.assets.loaded_filenames,
                          self.ecs_data.data), f)
