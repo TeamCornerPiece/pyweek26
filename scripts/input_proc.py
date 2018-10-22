@@ -77,9 +77,15 @@ class InputProcessor:
 
     def on_key_down(self, key):
         if key == 265:
-            self.engine.dispatch(CB_CAMERA_ZOOM, (-3, 0))
+            self.engine.dispatch(CB_CAMERA_ZOOM, (-5, 0))
         elif key == 264:
-            self.engine.dispatch(CB_CAMERA_ZOOM, (3, 0))
+            self.engine.dispatch(CB_CAMERA_ZOOM, (5, 0))
+        elif key == 87:
+            self.engine.dispatch(CB_PLAYER_SET_ACCEL, (1, 0))
+        elif key == 83:
+            self.engine.dispatch(CB_PLAYER_SET_REVERSE, (1, 0))
+        else:
+            print(key)
         self.engine.dispatch(CB_KEY_DOWN, [key])
 
     def on_key_up(self, key):
@@ -87,6 +93,10 @@ class InputProcessor:
             self.engine.dispatch(CB_CAMERA_ZOOM, (0, 0))
         elif key == 264:
             self.engine.dispatch(CB_CAMERA_ZOOM, (0, 0))
+        elif key == 87:
+            self.engine.dispatch(CB_PLAYER_SET_ACCEL, (0, 0))
+        elif key == 83:
+            self.engine.dispatch(CB_PLAYER_SET_REVERSE, (1, 0))
         self.engine.dispatch(CB_KEY_UP, [key])
 
     def on_mouse_down(self, button):

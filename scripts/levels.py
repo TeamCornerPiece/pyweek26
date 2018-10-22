@@ -8,10 +8,22 @@ def test_level(engine):
     ent_id = engine.ecs_data.add_entity()
     # add components to entity
     engine.ecs_data.add_components(ent_id,
+                                   COMP_PLAYER,
                                    COMP_TRANSFORM,
                                    COMP_MESH,
-                                   COMP_SHAPE)
+                                   COMP_SHAPE,
+                                   COMP_INPUT)
     # get/set mesh component data
+    engine.ecs_data.set_component_data(ent_id, COMP_PLAYER,
+                                       PLAYER_ACCEL_INPUT=0,
+                                       PLAYER_ACCEL_FORCE=1,
+                                       PLAYER_REVERSE_INPUT=0,
+                                       PLAYER_REVERSE_FORCE=1,
+                                       )
+
+    engine.ecs_data.set_component_data(ent_id, COMP_INPUT,
+                                       INPUT_ID=0)
+
     engine.ecs_data.set_component_data(ent_id, COMP_MESH,
                                        MESH_ID=engine.assets.get_mesh_id('models/chaynik/Chaynik.obj')
                                        )
