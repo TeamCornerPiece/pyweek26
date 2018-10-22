@@ -18,6 +18,9 @@ from systems import (
     render_sys,
     level_sys,
     physics_sys,
+    camera_movement_sys,
+    parent_sys,
+
 )
 
 
@@ -39,12 +42,14 @@ class Engine:
             render_sys.RenderSys(self),
             level_sys.LevelSys(self),
             physics_sys.PhysicsSys(self),
+            camera_movement_sys.CameraMovementSys(self),
+            parent_sys.ParentSys(self),
         )
 
         self.assets = asset_manager.AssetManager()
 
         levels.test_level(self)
-        #self.load('levels/test_level.level')
+        # self.load('levels/test_level.level')
 
         # self.dispatch(CB_SAVE_LEVEL, ['levels/test_level.level'])
         # self.dispatch(CB_LOAD_LEVEL, ['levels/test_level.level'])
@@ -54,21 +59,17 @@ class Engine:
         saved = False
 
         time = glfwGetTime()
-        lastTime = time
-        deltaTime = 0.0
-
+        last_time = time
 
         while not glfwWindowShouldClose(self.window):
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-
-            lastTime = time
+            last_time = time
             time = glfwGetTime()
-            deltaTime = time - lastTime
-
+            dt = time - last_time
 
             if total_time < 10:
-                total_time += deltaTime
+                total_time += dt
                 if total_time >= 10:
                     if saved:
                         print('load')
@@ -79,8 +80,8 @@ class Engine:
                         saved = True
                     total_time = 0
 
-            self.input_proc.update(deltaTime)
-            self.dispatch(CB_UPDATE, [deltaTime])
+            self.input_proc.update(dt)
+            self.dispatch(CB_UPDATE, [dt])
 
             glfwPollEvents()
             glfwSwapBuffers(self.window)
@@ -118,7 +119,6 @@ class Engine:
         if cb is CB_SAVE_LEVEL:
             self.save(*args)
 
-
     def load(self, filename):
         if os.path.exists(filename):
             with open(filename, 'rb') as f:
@@ -128,7 +128,6 @@ class Engine:
                 self.ecs_data.set_data(game_data)
 
             return True
-
 
     def save(self, filename):
         with open(filename, 'wb+') as f:

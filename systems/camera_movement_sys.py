@@ -9,7 +9,7 @@ from scripts.callbacks import *
 from scripts.components import *
 
 
-class CameraMovement(System):
+class CameraMovementSys(System):
     def init(self):
         self.callbacks = {
             CB_CAMERA_TURN: self.camera_turn,

@@ -56,6 +56,7 @@ class RenderSys(System):
             cam_pos = glm.vec3(trans_data[TRANSFORM_X:TRANSFORM_Z + 1])
 
             view = glm.mat4(1.0)
+            view = glm.translate(view, glm.vec3(0, 0, -cam_data[CAMERA_ORBIT_DIST]))
             view = glm.rotate(view, trans_data[TRANSFORM_PITCH], glm.vec3(1.0, 0.0, 0.0))
             view = glm.rotate(view, trans_data[TRANSFORM_YAW], glm.vec3(0.0, 1.0, 0.0))
             view = glm.translate(view, -cam_pos)
