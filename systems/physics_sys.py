@@ -56,11 +56,13 @@ class PhysicsSys(System):
             if player_data:
                 force = player_data[PLAYER_ACCEL_INPUT] * player_data[PLAYER_ACCEL_FORCE] * dt
                 force -= player_data[PLAYER_REVERSE_INPUT] * player_data[PLAYER_REVERSE_FORCE] * dt
+                turn_force = player_data[PLAYER_TURN_INPUT] * player_data[PLAYER_TURN_FORCE] * dt
                 shape_data = ecs_data.get_component_data(ent_id, COMP_SHAPE)
                 if shape_data:
                     shape = self.shapes.get(shape_data[SHAPE_ID])
                     if shape and shape.body is not self.space.static_body:
                         shape.body.apply_impulse_at_local_point((0, force))
+                        shape.body.angular_velocity += turn_force
 
 
     def add_physics_ent(self, ecs_data: ecs.ECS, ent_id: int):

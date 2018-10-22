@@ -16,7 +16,7 @@ class PlayerMovementSys(System):
         self.callbacks = {
             CB_PLAYER_SET_ACCEL: self.player_accel,
             CB_PLAYER_SET_REVERSE: self.player_reverse,
-
+            CB_PLAYER_SET_TURN: self.player_turn,
             CB_UPDATE: self.update,
         }
 
@@ -38,3 +38,11 @@ class PlayerMovementSys(System):
                 player_data = ecs_data.get_component_data(ent_id, COMP_PLAYER)
                 if player_data:
                     player_data[PLAYER_REVERSE_INPUT] = value
+
+    def player_turn(self, ecs_data: ecs.ECS, value: float, controller_id: int):
+        for ent_id in ecs_data.get_entities(COMP_PLAYER, COMP_INPUT):
+            input_data = ecs_data.get_component_data(ent_id, COMP_INPUT)
+            if input_data and input_data[INPUT_ID] == controller_id:
+                player_data = ecs_data.get_component_data(ent_id, COMP_PLAYER)
+                if player_data:
+                    player_data[PLAYER_TURN_INPUT] = value

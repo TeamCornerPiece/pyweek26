@@ -30,9 +30,9 @@ write_line('# COMPONENT CONSTANTS\n\n')
 
 add_component('TRANSFORM', ['X', 'Y', 'Z', 'PITCH', 'YAW', 'SX', 'SY', 'SZ'])
 add_component('CAMERA', ['FOV', 'NEAR', 'FAR', 'DIST', 'DELTA_DIST'])
-add_component('MESH', ['ID', 'SPEC_R', 'SPEC_G', 'SPEC_B'])
+add_component('MESH', ['ID', 'TEX_ID', 'SPEC_R', 'SPEC_G', 'SPEC_B'])
 add_component('INPUT', ['ID', 'X', 'Y'])
-add_component('PLAYER', ['ACCEL_FORCE', 'ACCEL_INPUT', 'REVERSE_FORCE', 'REVERSE_INPUT'])
+add_component('PLAYER', ['ACCEL_FORCE', 'ACCEL_INPUT', 'REVERSE_FORCE', 'REVERSE_INPUT', 'TURN_FORCE', 'TURN_INPUT'])
 add_component('SHAPE', ['ID', 'DX', 'DY', 'DA', 'TYPE', 'MASS', 'RADIUS', 'SIZE_X', 'SIZE_Y', 'ELASTICITY', 'FRICTION'])
 add_component('PARENT', ['ENT_ID', 'OFFSET_X', 'OFFSET_Y', 'OFFSET_Z'])
 

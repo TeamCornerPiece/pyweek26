@@ -84,6 +84,10 @@ class InputProcessor:
             self.engine.dispatch(CB_PLAYER_SET_ACCEL, (1, 0))
         elif key == 83:
             self.engine.dispatch(CB_PLAYER_SET_REVERSE, (1, 0))
+        elif key == 65:
+            self.engine.dispatch(CB_PLAYER_SET_TURN, (1, 0))
+        elif key == 68:
+            self.engine.dispatch(CB_PLAYER_SET_TURN, (-1, 0))
         else:
             print(key)
         self.engine.dispatch(CB_KEY_DOWN, [key])
@@ -96,7 +100,9 @@ class InputProcessor:
         elif key == 87:
             self.engine.dispatch(CB_PLAYER_SET_ACCEL, (0, 0))
         elif key == 83:
-            self.engine.dispatch(CB_PLAYER_SET_REVERSE, (1, 0))
+            self.engine.dispatch(CB_PLAYER_SET_REVERSE, (0, 0))
+        elif key == 65 or key == 68:
+            self.engine.dispatch(CB_PLAYER_SET_TURN, (0, 0))
         self.engine.dispatch(CB_KEY_UP, [key])
 
     def on_mouse_down(self, button):

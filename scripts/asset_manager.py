@@ -66,7 +66,6 @@ class AssetManager:
 
 
     def get_texture_data(self, tex_id):
-        print(self.textures)
         assert tex_id in self.textures, 'invalid texture_id'
         return self.textures[tex_id]
 

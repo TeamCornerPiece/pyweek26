@@ -63,8 +63,6 @@ class RenderSys(System):
             view = glm.rotate(view, trans_data[TRANSFORM_YAW], glm.vec3(0.0, 1.0, 0.0))
             view = glm.translate(view, -cam_pos)
 
-            print(view)
-
             # forward = euclidean(trans_data[TRANSFORM_YAW],
             #                     trans_data[TRANSFORM_PITCH])
             # view = glm.lookAt(cam_pos, cam_pos + forward, glm.vec3(0, 1, 0))
