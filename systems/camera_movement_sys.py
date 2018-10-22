@@ -23,9 +23,9 @@ class CameraMovementSys(System):
             input_data = ecs_data.get_component_data(ent_id, COMP_INPUT)
 
             if input_data and trans_data:
-                trans_data[TRANSFORM_YAW] += input_data[INPUT_X] * dt
+                trans_data[TRANSFORM_YAW] += input_data[INPUT_X] * dt * glm.radians(360.0)
                 trans_data[TRANSFORM_PITCH] = glm.clamp(trans_data[TRANSFORM_PITCH] +
-                                                        input_data[INPUT_Y] * dt,
+                                                        input_data[INPUT_Y] * dt * glm.radians(360.0),
                                                         glm.radians(-60),
                                                         glm.radians(60))
                 if input_data[INPUT_ID] == 0:

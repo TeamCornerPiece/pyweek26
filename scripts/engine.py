@@ -109,15 +109,15 @@ class Engine:
         # glCullFace(GL_FRONT)
 
     def dispatch(self, cb, args=[]):
-        if cb is CB_LOAD_LEVEL:
-            assert self.load(*args), 'failed to load {}'.format(args[0])
+        #if cb is CB_LOAD_LEVEL:
+        #    assert self.load(*args), 'failed to load {}'.format(args[0])
 
         for s in self.systems:
             if s.settings.get('active', False) and cb in s.callbacks:
                 s.callbacks[cb](self.ecs_data, *args)
 
-        if cb is CB_SAVE_LEVEL:
-            self.save(*args)
+        #if cb is CB_SAVE_LEVEL:
+        #    self.save(*args)
 
     def load(self, filename):
         if os.path.exists(filename):
