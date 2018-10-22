@@ -1,3 +1,5 @@
+
+import os
 import random
 
 from gl import *
@@ -27,13 +29,14 @@ class AssetManager:
         self.quad_vao = createMesh(quadVertices, quadNormals, quadIndices)
         self.len_quad_indices = len(quadIndices)
 
-    def get_mesh_id(self, filename: str):
-        mesh_id = hash_filename(filename)
+    def get_mesh_id(self, fn: str):
+        fn = os.path.join(*fn.split('/'))
+        mesh_id = hash_filename(fn)
         if mesh_id not in self.meshes:
-            self.loaded_filenames.append(filename)
+            self.loaded_filenames.append(fn)
             self.meshes[mesh_id] = []
 
-            obj = objloader.ObjFile(filename)
+            obj = objloader.ObjFile(fn)
             for o in obj.objects.values():
                 self.meshes[mesh_id].append((createMesh(np.array(o.vertices, np.float32).flatten(),
                                                         np.array(o.normals, np.float32).flatten(),

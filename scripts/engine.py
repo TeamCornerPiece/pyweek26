@@ -18,6 +18,7 @@ from systems import (
     render_sys,
     level_sys,
     physics_sys,
+    camera_movement_sys,
 )
 
 
@@ -39,6 +40,7 @@ class Engine:
             render_sys.RenderSys(self),
             level_sys.LevelSys(self),
             physics_sys.PhysicsSys(self),
+            camera_movement_sys.CameraMovement(self)
         )
 
         self.assets = asset_manager.AssetManager()

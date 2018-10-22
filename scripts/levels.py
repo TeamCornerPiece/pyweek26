@@ -12,14 +12,19 @@ def test_level(engine):
                                    COMP_MESH,
                                    COMP_SHAPE)
     # get/set mesh component data
-    mesh_data = engine.ecs_data.get_component_data(ent_id, COMP_MESH)
-    # mesh_data[MESH_ID] = self.engine.assets.get_mesh_id('models\\test_sphere.obj')
-    mesh_data[MESH_ID] = engine.assets.get_mesh_id('models\\chaynik\\Chaynik.obj')
+    engine.ecs_data.set_component_data(ent_id, COMP_MESH,
+                                       MESH_ID=engine.assets.get_mesh_id('models/chaynik/Chaynik.obj')
+                                       )
 
     engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
-                                       0, 0, 1,
-                                       0, 0,
-                                       1, 1, 1)
+                                       TRANSFORM_X=0,
+                                       TRANSFORM_Y=0,
+                                       TRANSFORM_Z=1,
+                                       TRANSFORM_PITCH=0,
+                                       TRANSFORM_YAW=0,
+                                       TRANSFORM_SX=1,
+                                       TRANSFORM_SY=1,
+                                       TRANSFORM_SZ=1)
 
     engine.ecs_data.set_component_data(ent_id, COMP_SHAPE,
                                        SHAPE_TYPE=0,
@@ -34,7 +39,6 @@ def test_level(engine):
 
     engine.dispatch(CB_ADD_PHYSICS_ENT, [ent_id])
 
-
     # WALL CUBE
 
     ent_id = engine.ecs_data.add_entity()
@@ -44,12 +48,17 @@ def test_level(engine):
                                    COMP_SHAPE)
 
     engine.ecs_data.set_component_data(ent_id, COMP_MESH,
-                                       MESH_ID=engine.assets.get_mesh_id('models\\cube.obj'))
+                                       MESH_ID=engine.assets.get_mesh_id('models/cube.obj'))
 
     engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
-                                       3, 0, 0,
-                                       0, -30.0 / 57.3,
-                                       1, 2, 5)
+                                       TRANSFORM_X=3,
+                                       TRANSFORM_Y=0,
+                                       TRANSFORM_Z=0,
+                                       TRANSFORM_PITCH=0,
+                                       TRANSFORM_YAW=0,
+                                       TRANSFORM_SX=1,
+                                       TRANSFORM_SY=2,
+                                       TRANSFORM_SZ=5)
 
     engine.ecs_data.set_component_data(ent_id, COMP_SHAPE,
                                        SHAPE_TYPE=1,
@@ -75,12 +84,17 @@ def test_level(engine):
                                    COMP_SHAPE)
 
     engine.ecs_data.set_component_data(ent_id, COMP_MESH,
-                                       MESH_ID=engine.assets.get_mesh_id('models\\cube.obj'))
+                                       MESH_ID=engine.assets.get_mesh_id('models/cube.obj'))
 
     engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
-                                       -3, 0, 0,
-                                       0, 0,
-                                       1, 2, 5)
+                                       TRANSFORM_X=-3,
+                                       TRANSFORM_Y=0,
+                                       TRANSFORM_Z=0,
+                                       TRANSFORM_PITCH=0,
+                                       TRANSFORM_YAW=0,
+                                       TRANSFORM_SX=1,
+                                       TRANSFORM_SY=2,
+                                       TRANSFORM_SZ=5)
 
     engine.ecs_data.set_component_data(ent_id, COMP_SHAPE,
                                        SHAPE_TYPE=1,
@@ -97,27 +111,30 @@ def test_level(engine):
 
     engine.dispatch(CB_ADD_PHYSICS_ENT, [ent_id])
 
-
-
     # CAMERA
 
     ent_id = engine.ecs_data.add_entity()
     # add components to camera entity
     engine.ecs_data.add_components(ent_id,
                                    COMP_CAMERA,
-                                   COMP_TRANSFORM)
-    # get/set camera component data
-    cam_data = engine.ecs_data.get_component_data(ent_id, COMP_CAMERA)
-    cam_data[CAMERA_FOV] = 70.0 / 57.3
-    cam_data[CAMERA_NEAR] = 0.01
-    cam_data[CAMERA_FAR] = 10.0
+                                   COMP_TRANSFORM,
+                                   COMP_INPUT)
 
-    trans_data = engine.ecs_data.get_component_data(ent_id, COMP_TRANSFORM)
-    trans_data[TRANSFORM_X] = 0
-    trans_data[TRANSFORM_Y] = 2 * 5
-    trans_data[TRANSFORM_Z] = 0 * 5
-    trans_data[TRANSFORM_PITCH] = 90 / 57.3
-    trans_data[TRANSFORM_YAW] = 0.0 / 57.3
+    # get/set camera component data
+    engine.ecs_data.set_component_data(ent_id, COMP_CAMERA,
+                                       CAMERA_FOV=70.0 / 57.3,
+                                       CAMERA_NEAR=0.1,
+                                       CAMERA_FAR=1000.0)
+
+    engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
+                                       TRANSFORM_X=0,
+                                       TRANSFORM_Y=1 * 5,
+                                       TRANSFORM_Z=1 * 5,
+                                       TRANSFORM_PITCH=30 / 57.3,
+                                       TRANSFORM_YAW=0.0 / 57.3)
+
+    engine.ecs_data.set_component_data(ent_id, COMP_INPUT,
+                                       INPUT_ID=0)
 
 
 LEVELS = {
