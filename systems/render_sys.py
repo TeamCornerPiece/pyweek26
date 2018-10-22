@@ -18,7 +18,7 @@ def euclidean(theta: float, phi: float):
     sinT = math.sin(theta)
     cosP = math.cos(phi)
     sinP = math.sin(phi)
-    return glm.vec3(cosT * sinT, sinP, cosT * cosP)
+    return glm.vec3(sinT * cosP, cosT, sinT * sinP)
 
 
 class RenderSys(System):
@@ -52,15 +52,18 @@ class RenderSys(System):
             cam_data = ecs_data.get_component_data(cam_ent_id, COMP_CAMERA)
             trans_data = ecs_data.get_component_data(cam_ent_id, COMP_TRANSFORM)
 
-            view = glm.mat4(1.0)
-            view = glm.rotate(view, trans_data[TRANSFORM_YAW], glm.vec3(0.0, 1.0, 0.0))
-            view = glm.rotate(view, trans_data[TRANSFORM_PITCH], glm.vec3(1.0, 0.0, 0.0))
+
             cam_pos = glm.vec3(trans_data[TRANSFORM_X:TRANSFORM_Z + 1])
+
+            view = glm.mat4(1.0)
+            view = glm.rotate(view, trans_data[TRANSFORM_PITCH], glm.vec3(1.0, 0.0, 0.0))
+            view = glm.rotate(view, trans_data[TRANSFORM_YAW], glm.vec3(0.0, 1.0, 0.0))
             view = glm.translate(view, -cam_pos)
 
-            # forward = euclidean(2 * math.pi * .5, 0)
-            # eye = glm.vec3(0, 0, .3)
-            # view = glm.lookAt(eye, eye + forward, glm.vec3(0, 1, 0))
+            # forward = euclidean(trans_data[TRANSFORM_YAW],
+            #                     trans_data[TRANSFORM_PITCH])
+            # view = glm.lookAt(cam_pos, cam_pos + forward, glm.vec3(0, 1, 0))
+
             proj = glm.perspective(cam_data[CAMERA_FOV],
                                    self.w / float(self.h),
                                    cam_data[CAMERA_NEAR],
@@ -72,6 +75,9 @@ class RenderSys(System):
             for ent_id in ecs_data.get_entities(COMP_MESH, COMP_TRANSFORM):
                 mesh_data = ecs_data.get_component_data(ent_id, COMP_MESH)
                 vao_data = self.engine.assets.get_mesh_data(mesh_data[MESH_ID])
+
+                spec = mesh_data[MESH_SPEC_R: MESH_SPEC_B + 1]
+                print(spec)
 
                 model = glm.mat4(1.0)
 

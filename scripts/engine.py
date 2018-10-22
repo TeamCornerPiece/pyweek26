@@ -59,17 +59,17 @@ class Engine:
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
             dt = .01
-            if total_time < 10:
-                total_time += dt
-                if total_time >= 10:
-                    if saved:
-                        print('load')
-                        self.dispatch(CB_LOAD_LEVEL, ['levels/test_level.level'])
-                    else:
-                        print('save')
-                        self.dispatch(CB_SAVE_LEVEL, ['levels/test_level.level'])
-                        saved = True
-                    total_time = 0
+            # if total_time < 10:
+            #     total_time += dt
+            #     if total_time >= 10:
+            #         if saved:
+            #             print('load')
+            #             self.dispatch(CB_LOAD_LEVEL, ['levels/test_level.level'])
+            #         else:
+            #             print('save')
+            #             self.dispatch(CB_SAVE_LEVEL, ['levels/test_level.level'])
+            #             saved = True
+            #         total_time = 0
 
             self.input_proc.update(dt)
             self.dispatch(CB_UPDATE, [dt])

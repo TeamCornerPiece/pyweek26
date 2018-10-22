@@ -1,3 +1,5 @@
+import glm
+
 from scripts import (
     ecs,
 )
@@ -18,6 +20,9 @@ class CameraMovement(System):
             input_data = ecs_data.get_component_data(ent_id, COMP_INPUT)
             if input_data and input_data[INPUT_ID] == controller_id:
                 trans_data = ecs_data.get_component_data(ent_id, COMP_TRANSFORM)
-                trans_data[TRANSFORM_PITCH] += pitch
+
                 trans_data[TRANSFORM_YAW] += yaw
+                trans_data[TRANSFORM_PITCH] = glm.clamp(trans_data[TRANSFORM_PITCH] + pitch,
+                                                        glm.radians(-60),
+                                                        glm.radians(60))
 

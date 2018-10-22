@@ -48,7 +48,11 @@ def test_level(engine):
                                    COMP_SHAPE)
 
     engine.ecs_data.set_component_data(ent_id, COMP_MESH,
-                                       MESH_ID=engine.assets.get_mesh_id('models/cube.obj'))
+                                       MESH_ID=engine.assets.get_mesh_id('models/cube.obj'),
+                                       MESH_SPEC_R=1.0,
+                                       MESH_SPEC_G=0.0,
+                                       MESH_SPEC_B=0.5,
+                                       )
 
     engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
                                        TRANSFORM_X=3,
@@ -62,7 +66,7 @@ def test_level(engine):
 
     engine.ecs_data.set_component_data(ent_id, COMP_SHAPE,
                                        SHAPE_TYPE=1,
-                                       SHAPE_MASS=1.0,
+                                       SHAPE_MASS=-1.0,
                                        SHAPE_RADIUS=1.0,
                                        SHAPE_SIZE_X=1,
                                        SHAPE_SIZE_Y=5,
