@@ -130,7 +130,8 @@ def test_level(engine):
                                        CAMERA_FOV=70.0 / 57.3,
                                        CAMERA_NEAR=0.1,
                                        CAMERA_FAR=1000.0,
-                                       CAMERA_ORBIT_DIST=10)
+                                       CAMERA_DIST=10,
+                                       CAMERA_DELTA_DIST=0)
 
     engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
                                        TRANSFORM_X=0,
@@ -140,7 +141,9 @@ def test_level(engine):
                                        TRANSFORM_YAW=0.0 / 57.3)
 
     engine.ecs_data.set_component_data(ent_id, COMP_INPUT,
-                                       INPUT_ID=0)
+                                       INPUT_ID=0,
+                                       INPUT_X=0,
+                                       INPUT_Y=0)
 
     engine.ecs_data.set_component_data(ent_id, COMP_PARENT,
                                        PARENT_ENT_ID=0,

@@ -3,10 +3,6 @@ from OpenGL.GL import *
 
 from scripts.callbacks import *
 
-@GLDEBUGPROC
-def MessageCallback(source, msg_type, msg_id, severity, length, message, userParam):
-    print("GL CALLBACK: {} type = {}, severity = {}, message = {}".format(source, msg_type, severity,
-                                                                          message.decode("utf-8")))
 
 class InputProcessor:
     def __init__(self, engine):
@@ -15,7 +11,7 @@ class InputProcessor:
         self.last_x = 0
         self.last_y = 0
 
-        #context = glfwGetCurrentContext()
+        # context = glfwGetCurrentContext()
         glEnable(GL_DEBUG_OUTPUT)
         glDebugMessageCallback(MessageCallback, None)
 
@@ -80,9 +76,17 @@ class InputProcessor:
         pass
 
     def on_key_down(self, key):
+        if key == 265:
+            self.engine.dispatch(CB_CAMERA_ZOOM, (-3, 0))
+        elif key == 264:
+            self.engine.dispatch(CB_CAMERA_ZOOM, (3, 0))
         self.engine.dispatch(CB_KEY_DOWN, [key])
 
     def on_key_up(self, key):
+        if key == 265:
+            self.engine.dispatch(CB_CAMERA_ZOOM, (0, 0))
+        elif key == 264:
+            self.engine.dispatch(CB_CAMERA_ZOOM, (0, 0))
         self.engine.dispatch(CB_KEY_UP, [key])
 
     def on_mouse_down(self, button):
@@ -107,7 +111,7 @@ class InputProcessor:
         self.last_x = x
         self.last_y = y
 
-        self.engine.dispatch(CB_CAMERA_TURN, (dy * .01, dx * .01, 0))
+        self.engine.dispatch(CB_CAMERA_TURN, (dy, dx, 0))
         self.engine.dispatch(CB_MOUSE_MOVE, (x, y, dx, dy))
 
 
@@ -146,3 +150,9 @@ def on_scroll(window, dx, dy):
 @GLFWwindowsizefun
 def on_window_size(window, w, h):
     glfwGetWindowUserPointer(window).on_size(w, h)
+
+
+@GLDEBUGPROC
+def MessageCallback(source, msg_type, msg_id, severity, length, message, userParam):
+    print("GL CALLBACK: {} type = {}, severity = {}, message = {}".format(source, msg_type, severity,
+                                                                          message.decode("utf-8")))
