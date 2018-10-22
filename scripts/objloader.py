@@ -6,7 +6,7 @@ class MeshData(object):
         self.name = kwargs.get("name")
         self.vertices = []
         self.normals = []
-        self.tex_coords = []
+        self.texcoords = []
         self.indices = []
 
 
@@ -21,9 +21,9 @@ class ObjFile:
             mesh.indices.append(i)
             mesh.vertices.append(self.vertices[v])
             if tc == -1:
-                mesh.tex_coords.append((0, 0))
+                mesh.texcoords.append((0, 0))
             else:
-                mesh.tex_coords.append(self.texcoords[tc])
+                mesh.texcoords.append(self.texcoords[tc])
             mesh.normals.append(self.normals[n])
 
         self.objects[self._current_object] = mesh

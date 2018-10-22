@@ -13,7 +13,8 @@ def test_level(engine):
                                    COMP_SHAPE)
     # get/set mesh component data
     engine.ecs_data.set_component_data(ent_id, COMP_MESH,
-                                       MESH_ID=engine.assets.get_mesh_id('models/chaynik/Chaynik.obj')
+                                       MESH_ID=engine.assets.get_mesh_id('models/chaynik/Chaynik.obj'),
+                                       MESH_TEX_ID=engine.assets.get_texture_id('models/chaynik/textures/Chaynik.png')
                                        )
 
     engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
