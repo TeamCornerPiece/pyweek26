@@ -51,6 +51,18 @@ class PhysicsSys(System):
                             trans_data[TRANSFORM_Z] = shape.body.position.y
                             trans_data[TRANSFORM_YAW] = -shape.body.angle
 
+        for ent_id in ecs_data.get_entities(COMP_PLAYER, COMP_SHAPE):
+            player_data = ecs_data.get_component_data(ent_id, COMP_PLAYER)
+            if player_data:
+                force = player_data[PLAYER_ACCEL_INPUT] * player_data[PLAYER_ACCEL_FORCE] * dt
+                force -= player_data[PLAYER_REVERSE_INPUT] * player_data[PLAYER_REVERSE_FORCE] * dt
+                shape_data = ecs_data.get_component_data(ent_id, COMP_SHAPE)
+                if shape_data:
+                    shape = self.shapes.get(shape_data[SHAPE_ID])
+                    if shape and shape.body is not self.space.static_body:
+                        shape.body.apply_impulse_at_local_point((0, force))
+
+
     def add_physics_ent(self, ecs_data: ecs.ECS, ent_id: int):
         shape_data = ecs_data.get_component_data(ent_id, COMP_SHAPE)
 

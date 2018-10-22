@@ -20,6 +20,7 @@ from systems import (
     physics_sys,
     camera_movement_sys,
     parent_sys,
+    player_movement_sys,
 
 )
 
@@ -44,6 +45,7 @@ class Engine:
             physics_sys.PhysicsSys(self),
             camera_movement_sys.CameraMovementSys(self),
             parent_sys.ParentSys(self),
+            player_movement_sys.PlayerMovementSys(self)
         )
 
         self.assets = asset_manager.AssetManager()
@@ -68,17 +70,17 @@ class Engine:
             time = glfwGetTime()
             dt = time - last_time
 
-            if total_time < 10:
-                total_time += dt
-                if total_time >= 10:
-                    if saved:
-                        print('load')
-                        self.dispatch(CB_LOAD_LEVEL, ['levels/test_level.level'])
-                    else:
-                        print('save')
-                        self.dispatch(CB_SAVE_LEVEL, ['levels/test_level.level'])
-                        saved = True
-                    total_time = 0
+            # if total_time < 10:
+            #     total_time += dt
+            #     if total_time >= 10:
+            #         if saved:
+            #             print('load')
+            #             self.dispatch(CB_LOAD_LEVEL, ['levels/test_level.level'])
+            #         else:
+            #             print('save')
+            #             self.dispatch(CB_SAVE_LEVEL, ['levels/test_level.level'])
+            #             saved = True
+            #         total_time = 0
 
             self.input_proc.update(dt)
             self.dispatch(CB_UPDATE, [dt])
