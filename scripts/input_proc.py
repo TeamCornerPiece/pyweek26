@@ -3,6 +3,10 @@ from OpenGL.GL import *
 
 from scripts.callbacks import *
 
+@GLDEBUGPROC
+def MessageCallback(source, msg_type, msg_id, severity, length, message, userParam):
+    print("GL CALLBACK: {} type = {}, severity = {}, message = {}".format(source, msg_type, severity,
+                                                                          message.decode("utf-8")))
 
 class InputProcessor:
     def __init__(self, engine):
@@ -11,9 +15,9 @@ class InputProcessor:
         self.last_x = 0
         self.last_y = 0
 
-        # context = glfwGetCurrentContext()
+        #context = glfwGetCurrentContext()
         glEnable(GL_DEBUG_OUTPUT)
-        glDebugMessageCallback(GLDEBUGPROC(MessageCallback), None)
+        glDebugMessageCallback(MessageCallback, None)
 
         glfwSetKeyCallback(self.engine.window, on_key)
         glfwSetMouseButtonCallback(self.engine.window, on_mouse_button)
@@ -141,8 +145,3 @@ def on_scroll(window, dx, dy):
 @GLFWwindowsizefun
 def on_window_size(window, w, h):
     glfwGetWindowUserPointer(window).on_size(w, h)
-
-
-def MessageCallback(source, msg_type, msg_id, severity, length, message, userParam):
-    print("GL CALLBACK: {} type = {}, severity = {}, message = {}".format(source, msg_type, severity,
-                                                                          message.decode("utf-8")))

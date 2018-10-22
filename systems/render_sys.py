@@ -21,6 +21,7 @@ def euclidean(theta: float, phi: float):
     return glm.vec3(cosT * sinT, sinP, cosT * cosP)
 
 
+
 class RenderSys(System):
     def init(self):
         self.callbacks = {
@@ -52,11 +53,20 @@ class RenderSys(System):
             cam_data = ecs_data.get_component_data(cam_ent_id, COMP_CAMERA)
             trans_data = ecs_data.get_component_data(cam_ent_id, COMP_TRANSFORM)
 
-            view = glm.mat4(1.0)
-            view = glm.rotate(view, trans_data[TRANSFORM_YAW], glm.vec3(0.0, 1.0, 0.0))
-            view = glm.rotate(view, trans_data[TRANSFORM_PITCH], glm.vec3(1.0, 0.0, 0.0))
+            # view = glm.mat4(1.0)
+            # view = glm.rotate(view, trans_data[TRANSFORM_YAW], glm.vec3(0.0, 1.0, 0.0))
+            # view = glm.rotate(view, trans_data[TRANSFORM_PITCH], glm.vec3(1.0, 0.0, 0.0))
+            # cam_pos = glm.vec3(trans_data[TRANSFORM_X:TRANSFORM_Z + 1])
+            # view = glm.translate(view, -cam_pos)
+
+            theta = 0
+            phi = 0
+            forward = euclidean(theta, phi)
+
             cam_pos = glm.vec3(trans_data[TRANSFORM_X:TRANSFORM_Z + 1])
-            view = glm.translate(view, -cam_pos)
+            view = glm.lookAt(glm.vec3(0, 0, -5), glm.vec3(0, 0, -5) + forward, glm.vec3(0,1,0))
+
+            #view = glm.translate(view, -cam_pos)
 
             # forward = euclidean(2 * math.pi * .5, 0)
             # eye = glm.vec3(0, 0, .3)

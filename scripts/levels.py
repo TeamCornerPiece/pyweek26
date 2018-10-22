@@ -1,6 +1,6 @@
 from scripts.components import *
 from scripts.callbacks import *
-
+import os
 
 def test_level(engine):
     # PLAYER
@@ -14,7 +14,7 @@ def test_level(engine):
     # get/set mesh component data
     mesh_data = engine.ecs_data.get_component_data(ent_id, COMP_MESH)
     # mesh_data[MESH_ID] = self.engine.assets.get_mesh_id('models\\test_sphere.obj')
-    mesh_data[MESH_ID] = engine.assets.get_mesh_id('models\\chaynik\\Chaynik.obj')
+    mesh_data[MESH_ID] = engine.assets.get_mesh_id(os.path.join('models', 'chaynik', 'Chaynik.obj'))
 
     engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
                                        0, 0, 1,
@@ -44,7 +44,7 @@ def test_level(engine):
                                    COMP_SHAPE)
 
     engine.ecs_data.set_component_data(ent_id, COMP_MESH,
-                                       MESH_ID=engine.assets.get_mesh_id('models\\cube.obj'))
+                                       MESH_ID=engine.assets.get_mesh_id(os.path.join('models', 'cube.obj')))
 
     engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
                                        3, 0, 0,
@@ -75,7 +75,7 @@ def test_level(engine):
                                    COMP_SHAPE)
 
     engine.ecs_data.set_component_data(ent_id, COMP_MESH,
-                                       MESH_ID=engine.assets.get_mesh_id('models\\cube.obj'))
+                                       MESH_ID=engine.assets.get_mesh_id(os.path.join('models', 'cube.obj')))
 
     engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
                                        -3, 0, 0,
