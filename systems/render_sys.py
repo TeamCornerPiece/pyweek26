@@ -55,11 +55,15 @@ class RenderSys(System):
 
             cam_pos = glm.vec3(trans_data[TRANSFORM_X:TRANSFORM_Z + 1])
 
+            #glUniform3f(glGetUniformLocation(self.shader, 'cameraPosition'), cam_pos.x, cam_pos.y, cam_pos.z)
+
             view = glm.mat4(1.0)
             view = glm.translate(view, glm.vec3(0, 0, -cam_data[CAMERA_DIST]))
             view = glm.rotate(view, trans_data[TRANSFORM_PITCH], glm.vec3(1.0, 0.0, 0.0))
             view = glm.rotate(view, trans_data[TRANSFORM_YAW], glm.vec3(0.0, 1.0, 0.0))
             view = glm.translate(view, -cam_pos)
+
+            print(view)
 
             # forward = euclidean(trans_data[TRANSFORM_YAW],
             #                     trans_data[TRANSFORM_PITCH])
@@ -78,6 +82,13 @@ class RenderSys(System):
                 vao_data = self.engine.assets.get_mesh_data(mesh_data[MESH_ID])
 
                 spec = mesh_data[MESH_SPEC_R: MESH_SPEC_B + 1]
+
+                texHash = mesh_data[MESH_TEX_ID]
+
+                if texHash is not -1:
+                    tex = self.engine.assets.get_texture_data(texHash)
+                    glBindTexture(GL_TEXTURE_2D, tex)
+                    glActiveTexture(GL_TEXTURE0 + tex)
 
                 model = glm.mat4(1.0)
 
