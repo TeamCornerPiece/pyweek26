@@ -86,7 +86,8 @@ class RenderSys(System):
                 if texHash is not -1:
                     tex = self.engine.assets.get_texture_data(texHash)
                     glBindTexture(GL_TEXTURE_2D, tex)
-                    glActiveTexture(GL_TEXTURE0 + tex)
+                    # glActiveTexture(GL_TEXTURE0 + tex)
+                    glUniform1i(glGetUniformLocation(self.shader, 'albedoTexture'), 0)
 
                 model = glm.mat4(1.0)
 

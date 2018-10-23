@@ -21,7 +21,15 @@ class PlayerMovementSys(System):
         }
 
     def update(self, ecs_data: ecs.ECS, dt: float):
-        pass
+        for ent_id in ecs_data.get_entities(COMP_PLAYER, COMP_TRANSFORM):
+            trans_data = ecs_data.get_component_data(ent_id, COMP_TRANSFORM)
+            player_data = ecs_data.get_component_data(ent_id, COMP_PLAYER)
+            if trans_data and player_data:
+                player_data[PLAYER_DY] -= 1 * dt
+                if trans_data[TRANSFORM_Y] < 0:
+                    player_data[PLAYER_DY] -= trans_data[TRANSFORM_Y] * 3 * dt
+                    player_data[PLAYER_DY] *= 1 - (.3 * dt)
+                trans_data[TRANSFORM_Y] += player_data[PLAYER_DY] * dt
 
     def player_accel(self, ecs_data: ecs.ECS, value: float, controller_id: int):
         for ent_id in ecs_data.get_entities(COMP_PLAYER, COMP_INPUT):

@@ -3,6 +3,9 @@ from OpenGL.GL import *
 
 from scripts.callbacks import *
 
+LX, LY, RX, RY, LT, RT = range(6)
+A, B, X, Y, LB, RB, SELECT, START, L_STICK, R_STICK, UP, RIGHT, DOWN, LEFT = range(14)
+
 
 class InputProcessor:
     def __init__(self, engine):
@@ -11,11 +14,14 @@ class InputProcessor:
         self.last_x = 0
         self.last_y = 0
 
+        self.joy_y_sensitivity = -.4
+        self.joy_x_sensitivity = .4
+
         # context = glfwGetCurrentContext()
         glEnable(GL_DEBUG_OUTPUT)
         glDebugMessageCallback(MessageCallback, None)
 
-        glfwSetInputMode(engine.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
+        # glfwSetInputMode(engine.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
 
         glfwSetKeyCallback(self.engine.window, on_key)
         glfwSetMouseButtonCallback(self.engine.window, on_mouse_button)
@@ -27,29 +33,46 @@ class InputProcessor:
 
         glfwSetWindowUserPointer(self.engine.window, self)
 
-    def update(self, window):
-        for joystick_id in range(1):
-            if glfwJoystickPresent(joystick_id):
-                joy_axis = glfwGetJoystickAxes(joystick_id)
-                joy_buttons = glfwGetJoystickButtons(joystick_id)
+        self.max_joysticks = 2
+        self.deadzone = .3
+        self.last_joy_axis = [[0 for _ in range(6)] for _ in range(self.max_joysticks)]
 
-                # ix = joy_axis[LX]
-                # if abs(ix) < self.deadzone:
-                #     ix = 0
-                # iy = joy_axis[LY]
-                # if abs(iy) < self.deadzone:
-                #     iy = 0
-                #
-                # stopped = (ix == 0 and iy == 0)
-                #
-                # if not stopped or not self.joy_stopped:
-                #     self.joy_stopped = stopped
-                #     self.engine.dispatch(JOY_STICK, (0, ix, iy, dt))
-                #
-                # self.engine.dispatch(JOY_STICK, (1,
-                #                                  joy_axis[RX] * -self.x_sensitivity,
-                #                                  joy_axis[RY] * -self.y_sensitivity, dt))
-                #
+    def update(self, dt: float):
+        for joy_id in range(self.max_joysticks):
+            if glfwJoystickPresent(joy_id):
+                joy_axis = glfwGetJoystickAxes(joy_id)
+                # joy_buttons = glfwGetJoystickButtons(joy_id)
+
+                if joy_axis[LX] != self.last_joy_axis[joy_id][LX]:
+                    ix = joy_axis[LX]
+                    if abs(ix) < self.deadzone:
+                        ix = 0
+                    self.engine.dispatch(CB_PLAYER_SET_TURN, (ix, joy_id + 1))
+
+                # if joy_axis[LY] != self.last_joy_axis[joy_id][LY]:
+                #     iy = joy_axis[LY]
+                #     if abs(iy) < self.deadzone:
+                #         iy = 0
+                #     self.engine.dispatch(CB_PLAYER_SET_TURN, (-iy * 75, joy_id + 1))
+
+                if joy_axis[RY] != self.last_joy_axis[joy_id][RY] or joy_axis[RX] != self.last_joy_axis[joy_id][RX]:
+                    self.engine.dispatch(CB_CAMERA_TURN,
+                                         (joy_axis[RY] * self.joy_y_sensitivity,
+                                          joy_axis[RX] * self.joy_x_sensitivity,
+                                          joy_id + 1))
+
+                if joy_axis[RT] != self.last_joy_axis[joy_id][RT]:
+                    accel = joy_axis[RT] * .5 + .5
+                    if accel < .2:
+                        accel = 0
+                    self.engine.dispatch(CB_PLAYER_SET_ACCEL, (accel, joy_id + 1))
+
+                if joy_axis[LT] != self.last_joy_axis[joy_id][LT]:
+                    reverse = joy_axis[LT] * .5 + .5
+                    if reverse < .2:
+                        reverse = 0
+                    self.engine.dispatch(CB_PLAYER_SET_REVERSE, (reverse, joy_id + 1))
+
                 # for button, value in enumerate(joy_buttons):
                 #     if value != self.button_states[button]:
                 #         self.button_states[button] = value
@@ -57,22 +80,8 @@ class InputProcessor:
                 #             self.engine.dispatch(JOY_BUTTON_DOWN, [button])
                 #         else:
                 #             self.engine.dispatch(JOY_BUTTON_UP, [button])
-                #
-                # rt_down = joy_axis[RT] > 0
-                # if rt_down != self.rt_down:
-                #     self.rt_down = rt_down
-                #     if self.rt_down:
-                #         self.engine.dispatch(JOY_BUTTON_DOWN, [RT_BUTTON])
-                #     else:
-                #         self.engine.dispatch(JOY_BUTTON_UP, [RT_BUTTON])
-                #
-                # lt_down = joy_axis[LT] > 0
-                # if lt_down != self.lt_down:
-                #     self.lt_down = lt_down
-                #     if self.lt_down:
-                #         self.engine.dispatch(JOY_BUTTON_DOWN, [LT_BUTTON])
-                #     else:
-                #         self.engine.dispatch(JOY_BUTTON_UP, [LT_BUTTON])
+
+                self.last_joy_axis[joy_id] = joy_axis
 
     def on_scroll(self, dx, dy):
         pass
@@ -87,9 +96,9 @@ class InputProcessor:
         elif key == 83:
             self.engine.dispatch(CB_PLAYER_SET_REVERSE, (1, 0))
         elif key == 65:
-            self.engine.dispatch(CB_PLAYER_SET_TURN, (1, 0))
-        elif key == 68:
             self.engine.dispatch(CB_PLAYER_SET_TURN, (-1, 0))
+        elif key == 68:
+            self.engine.dispatch(CB_PLAYER_SET_TURN, (1, 0))
         else:
             print(key)
         self.engine.dispatch(CB_KEY_DOWN, [key])

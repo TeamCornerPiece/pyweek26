@@ -16,6 +16,8 @@ class PhysicsSys(System):
 
     def init(self):
         self.space = pymunk.Space()
+        self.space.damping = .5
+        self.space.gravity = 0, -2 * 0
 
         self.shapes = {}
         self.shape_index = 0
@@ -61,8 +63,9 @@ class PhysicsSys(System):
                 if shape_data:
                     shape = self.shapes.get(shape_data[SHAPE_ID])
                     if shape and shape.body is not self.space.static_body:
-                        shape.body.apply_impulse_at_local_point((0, force))
-                        shape.body.angular_velocity += turn_force
+                        shape.body.apply_impulse_at_local_point((0, force * dt))
+                        shape.body.angular_velocity += turn_force * dt
+                        shape.body.angular_velocity *= 1 - (.95 * dt)
 
 
     def add_physics_ent(self, ecs_data: ecs.ECS, ent_id: int):

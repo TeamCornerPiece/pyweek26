@@ -23,11 +23,18 @@ class CameraMovementSys(System):
             input_data = ecs_data.get_component_data(ent_id, COMP_INPUT)
 
             if input_data and trans_data:
+                min_pitch = -1.57
+                max_pitch = 1.57
+
+                cam_data = ecs_data.get_component_data(ent_id, COMP_CAMERA)
+                if cam_data:
+                    min_pitch = cam_data[CAMERA_MIN_PITCH]
+                    max_pitch = cam_data[CAMERA_MAX_PITCH]
+
                 trans_data[TRANSFORM_YAW] += input_data[INPUT_X] * dt * glm.radians(360.0)
                 trans_data[TRANSFORM_PITCH] = glm.clamp(trans_data[TRANSFORM_PITCH] +
                                                         input_data[INPUT_Y] * dt * glm.radians(360.0),
-                                                        glm.radians(-60),
-                                                        glm.radians(60))
+                                                        min_pitch, max_pitch)
                 if input_data[INPUT_ID] == 0:
                     input_data[INPUT_X] = 0
                     input_data[INPUT_Y] = 0

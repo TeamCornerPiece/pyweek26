@@ -7,9 +7,10 @@ from gl import *
 from scripts import objloader
 
 
+import hashlib
+
 def hash_filename(filename):
-    random.seed(filename)
-    return random.randint(1000000, 9999999)
+    return hashlib.sha1(filename.encode()).hexdigest()
 
 
 class AssetManager:
@@ -53,15 +54,14 @@ class AssetManager:
         file_name = os.path.join(*file_name.split('/'))
         texture_id = hash_filename(file_name)
         if texture_id not in self.textures:
-            self.textures[texture_id] = []
             self.loaded_textures.append(file_name)
 
             image = Image.open(file_name)
             image = image.transpose(Image.FLIP_TOP_BOTTOM)
+            image = image.convert("RGBA")
 
             pixels = np.array(list(image.getdata()), np.uint8)
             self.textures[texture_id] = createTexture(pixels, image.width, image.height, GL_LINEAR, GL_CLAMP_TO_EDGE)
-
         return texture_id
 
 

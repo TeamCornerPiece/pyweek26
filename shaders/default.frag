@@ -27,7 +27,7 @@ void main() {
     vec3 V = normalize(cameraPosition - fragPosition);
 
     vec3 albedo = texture(albedoTexture, fragTexCoord).rgb;
-    vec3 color = phong(N, L, V, 0.02 * vec3(pow(albedo.r, 4.0), pow(albedo.g, 4.0), pow(albedo.b, 4.0)),
+    vec3 color = phong(N, L, V, 0.6 * vec3(pow(albedo.r, 4.0), pow(albedo.g, 4.0), pow(albedo.b, 4.0)),
     /* mat.albedo * */ albedo,
     vec3(pow(albedo.r, .5), pow(albedo.g, .5), pow(albedo.b, .5)), 50.0);
 

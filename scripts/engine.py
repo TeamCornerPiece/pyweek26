@@ -103,7 +103,7 @@ class Engine:
 
         glViewport(0, 0, w, h)
 
-        glClearColor(0, 0, 0, 1)
+        glClearColor(.6, .76, .9, 1)
 
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_CULL_FACE)
