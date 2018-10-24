@@ -63,9 +63,9 @@ class PhysicsSys(System):
                 if shape_data:
                     shape = self.shapes.get(shape_data[SHAPE_ID])
                     if shape and shape.body is not self.space.static_body:
-                        shape.body.apply_impulse_at_local_point((0, force * dt))
+                        shape.body.apply_impulse_at_local_point((0, force))
                         shape.body.angular_velocity += turn_force * dt
-                        shape.body.angular_velocity *= 1 - (.95 * dt)
+                        shape.body.angular_velocity *= 1 - (.9 * dt)
 
 
     def add_physics_ent(self, ecs_data: ecs.ECS, ent_id: int):
@@ -170,6 +170,8 @@ class PhysicsSys(System):
             shape_data = ecs_data.get_component_data(ent_id, COMP_SHAPE)
             if shape_data:
                 self.add_physics_ent(ecs_data, ent_id)
+
+
 
     def save_level(self, ecs_data: ecs.ECS, filename: str):
         for ent_id in ecs_data.get_entities(COMP_SHAPE):

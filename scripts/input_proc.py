@@ -15,7 +15,7 @@ class InputProcessor:
         self.last_y = 0
 
         self.joy_y_sensitivity = -.4
-        self.joy_x_sensitivity = .4
+        self.joy_x_sensitivity = .4 * 10
 
         # context = glfwGetCurrentContext()
         glEnable(GL_DEBUG_OUTPUT)

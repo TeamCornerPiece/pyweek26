@@ -5,6 +5,8 @@ from scripts.components import *
 from scripts.callbacks import *
 
 
+class Level:
+
 def test_level(engine):
     # PLAYER
 
@@ -20,11 +22,11 @@ def test_level(engine):
 
     engine.ecs_data.set_component_data(ent_id, COMP_PLAYER,
                                        PLAYER_ACCEL_INPUT=0,
-                                       PLAYER_ACCEL_FORCE=400,
+                                       PLAYER_ACCEL_FORCE=20,
                                        PLAYER_REVERSE_INPUT=0,
-                                       PLAYER_REVERSE_FORCE=60,
+                                       PLAYER_REVERSE_FORCE=20,
                                        PLAYER_TURN_INPUT=0,
-                                       PLAYER_TURN_FORCE=200,
+                                       PLAYER_TURN_FORCE=100,
                                        )
 
     engine.ecs_data.set_component_data(ent_id, COMP_INPUT,
@@ -82,7 +84,7 @@ def test_level(engine):
                                        )
 
     engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
-                                       TRANSFORM_X=0,
+                                       TRANSFORM_X=1,
                                        TRANSFORM_Y=1 * 5,
                                        TRANSFORM_Z=1 * 5,
                                        TRANSFORM_PITCH=30 / 57.3,
@@ -100,97 +102,145 @@ def test_level(engine):
                                        PARENT_OFFSET_Z=0,
                                        )
 
+    nodes = [
+        (glm.vec3(0.0, 0, 0.0), glm.vec3(4.0, 0, 0.0)),
+        (glm.vec3(0.4, -1, 12.8), glm.vec3(5.4, 0, -2.4000000000000004)),
+        (glm.vec3(5.0, -2, 24.6), glm.vec3(7.2, 0, -0.6000000000000001)),
+        (glm.vec3(15.600000000000001, -3, 34.6), glm.vec3(5.6000000000000005, 0, -5.2)),
+        (glm.vec3(33.0, -4, 36.800000000000004), glm.vec3(-1.8, 0, -6.0)),
+        (glm.vec3(51.0, -5, 27.8), glm.vec3(-7.800000000000001, 0, -3.8000000000000003)),
+        (glm.vec3(55.2, -6, 16.6), glm.vec3(-5.2, 0, -3.4000000000000004)),
+        (glm.vec3(53.400000000000006, -7, 4.2), glm.vec3(-5.2, 0, -0.2)),
+        (glm.vec3(50.6, -8, -2.4000000000000004), glm.vec3(-8.4, 0, 1.0)),
+        (glm.vec3(47.0, -9, -11.0), glm.vec3(-2.6, 0, -2.6)),
+        (glm.vec3(47.0, -10, -21.400000000000002), glm.vec3(-3.0, 0, -1.0)),
+    ]
 
-    # WATER
+    spacing = 3
+    for node_id, (pos, edge) in enumerate(nodes[:-1]):
+        next_pos, next_edge = nodes[node_id + 1]
 
-    ent_id = engine.ecs_data.add_entity()
-    engine.ecs_data.add_components(ent_id,
-                                   COMP_MESH,
-                                   COMP_TRANSFORM,
-                                   COMP_SHAPE)
+        norm = glm.normalize(edge)
+        next_norm = glm.normalize(next_edge)
 
-    engine.ecs_data.set_component_data(ent_id, COMP_MESH,
-                                       MESH_ID=engine.assets.get_mesh_id('models/cube.obj'),
-                                       MESH_TEX_ID=engine.assets.get_texture_id('textures/water.png'),
-                                       )
+        dist = glm.length(edge)
+        next_dist = glm.length(next_edge)
 
-    engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
-                                       TRANSFORM_X=0,
-                                       TRANSFORM_Y=0,
-                                       TRANSFORM_Z=0,
-                                       TRANSFORM_PITCH=0,
-                                       TRANSFORM_YAW=0,
-                                       TRANSFORM_SX=30,
-                                       TRANSFORM_SY=.1,
-                                       TRANSFORM_SZ=185)
+        step_size = 1 / 20
+        for step in range(21):
+            lerp = step_size * step
+            width = dist + (next_dist - dist) * lerp
+            normal = glm.normalize(norm + (next_norm - norm) * lerp)
+            center = pos + (next_pos - pos) * lerp
+            center *= 2
+            width *= 2
+            for i in (-1, 1):
+                scale = 2 + random.random() * 3
+                rock_pos = center + (normal * i * (width + random.random() * scale * 2))
 
-    # TEST TREE
+                ent_id = engine.ecs_data.add_entity()
+                engine.ecs_data.add_components(ent_id,
+                                               COMP_MESH,
+                                               COMP_TRANSFORM,
+                                               COMP_SHAPE)
 
-    for x in (-1, 1):
-        for z in range(-10, 11):
-            ent_id = engine.ecs_data.add_entity()
-            engine.ecs_data.add_components(ent_id,
-                                           COMP_MESH,
-                                           COMP_TRANSFORM,
-                                           COMP_SHAPE)
+                engine.ecs_data.set_component_data(ent_id, COMP_MESH,
+                                                   MESH_ID=engine.assets.get_mesh_id('models/rock.obj'),
+                                                   MESH_TEX_ID=engine.assets.get_texture_id('textures/rock.png'),
+                                                   )
 
-            engine.ecs_data.set_component_data(ent_id, COMP_MESH,
-                                               MESH_ID=engine.assets.get_mesh_id('models/tree_1.obj'),
-                                               MESH_TEX_ID=engine.assets.get_texture_id('textures/rock.png'),
-                                               )
+                engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
+                                                   TRANSFORM_X=rock_pos.x,
+                                                   TRANSFORM_Y=rock_pos.y,
+                                                   TRANSFORM_Z=rock_pos.z,
+                                                   TRANSFORM_PITCH=0,
+                                                   TRANSFORM_YAW=random.random() * 3.14,
+                                                   TRANSFORM_SX=scale,
+                                                   TRANSFORM_SY=scale,
+                                                   TRANSFORM_SZ=scale)
 
-            scale = 1 + random.random() * 2
+                engine.ecs_data.set_component_data(ent_id, COMP_SHAPE,
+                                                   SHAPE_TYPE=0,
+                                                   SHAPE_MASS=-1.0,
+                                                   SHAPE_RADIUS=scale * .5,
+                                                   SHAPE_SIZE_X=1,
+                                                   SHAPE_SIZE_Y=5,
+                                                   SHAPE_DX=0,
+                                                   SHAPE_DY=0,
+                                                   SHAPE_DA=0,
+                                                   SHAPE_ELASTICITY=1.0,
+                                                   SHAPE_FRICTION=1.0,
+                                                   )
 
-            engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
-                                               TRANSFORM_X=(x * 25) + random.random() * 5,
-                                               TRANSFORM_Y=0,
-                                               TRANSFORM_Z=(z * 5) + random.random() * 3,
-                                               TRANSFORM_PITCH=0,
-                                               TRANSFORM_YAW=random.random() * 3.14,
-                                               TRANSFORM_SX=scale,
-                                               TRANSFORM_SY=scale,
-                                               TRANSFORM_SZ=scale)
+                engine.dispatch(CB_ADD_PHYSICS_ENT, [ent_id])
 
-
-    for x in (-1, 1):
-        for y in range(-50, 51):
-            ent_id = engine.ecs_data.add_entity()
-            engine.ecs_data.add_components(ent_id,
-                                           COMP_MESH,
-                                           COMP_TRANSFORM,
-                                           COMP_SHAPE)
-
-            engine.ecs_data.set_component_data(ent_id, COMP_MESH,
-                                               MESH_ID=engine.assets.get_mesh_id('models/rock.obj'),
-                                               MESH_TEX_ID=engine.assets.get_texture_id('textures/rock.png'),
-                                               )
-
-            scale = 4 + random.random() * 5
-
-            engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
-                                               TRANSFORM_X=(x * scale * 2) + random.random() * 5,
-                                               TRANSFORM_Y=0,
-                                               TRANSFORM_Z=y * 2,
-                                               TRANSFORM_PITCH=0,
-                                               TRANSFORM_YAW=random.random() * 3.14,
-                                               TRANSFORM_SX=scale,
-                                               TRANSFORM_SY=scale,
-                                               TRANSFORM_SZ=scale)
-
-            engine.ecs_data.set_component_data(ent_id, COMP_SHAPE,
-                                               SHAPE_TYPE=0,
-                                               SHAPE_MASS=-1.0,
-                                               SHAPE_RADIUS=scale * .5,
-                                               SHAPE_SIZE_X=1,
-                                               SHAPE_SIZE_Y=5,
-                                               SHAPE_DX=0,
-                                               SHAPE_DY=0,
-                                               SHAPE_DA=0,
-                                               SHAPE_ELASTICITY=1.0,
-                                               SHAPE_FRICTION=1.0,
-                                               )
-
-            engine.dispatch(CB_ADD_PHYSICS_ENT, [ent_id])
+    # # TEST TREE
+    #
+    # for x in (-1, 1):
+    #     for z in range(-10, 11):
+    #         ent_id = engine.ecs_data.add_entity()
+    #         engine.ecs_data.add_components(ent_id,
+    #                                        COMP_MESH,
+    #                                        COMP_TRANSFORM,
+    #                                        COMP_SHAPE)
+    #
+    #         engine.ecs_data.set_component_data(ent_id, COMP_MESH,
+    #                                            MESH_ID=engine.assets.get_mesh_id('models/tree_1.obj'),
+    #                                            MESH_TEX_ID=engine.assets.get_texture_id('textures/rock.png'),
+    #                                            )
+    #
+    #         scale = 1 + random.random() * 2
+    #
+    #         engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
+    #                                            TRANSFORM_X=(x * 25) + random.random() * 5,
+    #                                            TRANSFORM_Y=0,
+    #                                            TRANSFORM_Z=(z * 5) + random.random() * 3,
+    #                                            TRANSFORM_PITCH=0,
+    #                                            TRANSFORM_YAW=random.random() * 3.14,
+    #                                            TRANSFORM_SX=scale,
+    #                                            TRANSFORM_SY=scale,
+    #                                            TRANSFORM_SZ=scale)
+    #
+    #
+    # for x in (-1, 1):
+    #     for y in range(-50, 51):
+    #         ent_id = engine.ecs_data.add_entity()
+    #         engine.ecs_data.add_components(ent_id,
+    #                                        COMP_MESH,
+    #                                        COMP_TRANSFORM,
+    #                                        COMP_SHAPE)
+    #
+    #         engine.ecs_data.set_component_data(ent_id, COMP_MESH,
+    #                                            MESH_ID=engine.assets.get_mesh_id('models/rock.obj'),
+    #                                            MESH_TEX_ID=engine.assets.get_texture_id('textures/rock.png'),
+    #                                            )
+    #
+    #         scale = 4 + random.random() * 5
+    #
+    #         engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
+    #                                            TRANSFORM_X=(x * scale * 2) + random.random() * 5,
+    #                                            TRANSFORM_Y=0,
+    #                                            TRANSFORM_Z=y * 2,
+    #                                            TRANSFORM_PITCH=0,
+    #                                            TRANSFORM_YAW=random.random() * 3.14,
+    #                                            TRANSFORM_SX=scale,
+    #                                            TRANSFORM_SY=scale,
+    #                                            TRANSFORM_SZ=scale)
+    #
+    #         engine.ecs_data.set_component_data(ent_id, COMP_SHAPE,
+    #                                            SHAPE_TYPE=0,
+    #                                            SHAPE_MASS=-1.0,
+    #                                            SHAPE_RADIUS=scale * .5,
+    #                                            SHAPE_SIZE_X=1,
+    #                                            SHAPE_SIZE_Y=5,
+    #                                            SHAPE_DX=0,
+    #                                            SHAPE_DY=0,
+    #                                            SHAPE_DA=0,
+    #                                            SHAPE_ELASTICITY=1.0,
+    #                                            SHAPE_FRICTION=1.0,
+    #                                            )
+    #
+    #         engine.dispatch(CB_ADD_PHYSICS_ENT, [ent_id])
 
 
 LEVELS = {

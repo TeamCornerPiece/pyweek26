@@ -31,9 +31,9 @@ class CameraMovementSys(System):
                     min_pitch = cam_data[CAMERA_MIN_PITCH]
                     max_pitch = cam_data[CAMERA_MAX_PITCH]
 
-                trans_data[TRANSFORM_YAW] += input_data[INPUT_X] * dt * glm.radians(360.0)
+                trans_data[TRANSFORM_YAW] += input_data[INPUT_X] * dt
                 trans_data[TRANSFORM_PITCH] = glm.clamp(trans_data[TRANSFORM_PITCH] +
-                                                        input_data[INPUT_Y] * dt * glm.radians(360.0),
+                                                        input_data[INPUT_Y] * dt,
                                                         min_pitch, max_pitch)
                 if input_data[INPUT_ID] == 0:
                     input_data[INPUT_X] = 0
