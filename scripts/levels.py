@@ -5,8 +5,6 @@ from scripts.components import *
 from scripts.callbacks import *
 
 
-class Level:
-
 def test_level(engine):
     # PLAYER
 
@@ -102,19 +100,33 @@ def test_level(engine):
                                        PARENT_OFFSET_Z=0,
                                        )
 
-    nodes = [
-        (glm.vec3(0.0, 0, 0.0), glm.vec3(4.0, 0, 0.0)),
-        (glm.vec3(0.4, -1, 12.8), glm.vec3(5.4, 0, -2.4000000000000004)),
-        (glm.vec3(5.0, -2, 24.6), glm.vec3(7.2, 0, -0.6000000000000001)),
-        (glm.vec3(15.600000000000001, -3, 34.6), glm.vec3(5.6000000000000005, 0, -5.2)),
-        (glm.vec3(33.0, -4, 36.800000000000004), glm.vec3(-1.8, 0, -6.0)),
-        (glm.vec3(51.0, -5, 27.8), glm.vec3(-7.800000000000001, 0, -3.8000000000000003)),
-        (glm.vec3(55.2, -6, 16.6), glm.vec3(-5.2, 0, -3.4000000000000004)),
-        (glm.vec3(53.400000000000006, -7, 4.2), glm.vec3(-5.2, 0, -0.2)),
-        (glm.vec3(50.6, -8, -2.4000000000000004), glm.vec3(-8.4, 0, 1.0)),
-        (glm.vec3(47.0, -9, -11.0), glm.vec3(-2.6, 0, -2.6)),
-        (glm.vec3(47.0, -10, -21.400000000000002), glm.vec3(-3.0, 0, -1.0)),
-    ]
+
+    engine.assets.load_river('models/test_river.obj')
+    nodes = []
+
+    # RIVER
+
+    ent_id = engine.ecs_data.add_entity()
+    engine.ecs_data.add_components(ent_id,
+                                   COMP_MESH,
+                                   COMP_TRANSFORM)
+
+    engine.ecs_data.set_component_data(ent_id, COMP_MESH,
+                                       MESH_ID=engine.assets.get_mesh_id('models/test_river.obj'),
+                                       MESH_TEX_ID=engine.assets.get_texture_id('textures/water.png'),
+                                       )
+
+    engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
+                                       TRANSFORM_X=0,
+                                       TRANSFORM_Y=0,
+                                       TRANSFORM_Z=0,
+                                       TRANSFORM_PITCH=0,
+                                       TRANSFORM_YAW=0,
+                                       TRANSFORM_SX=1,
+                                       TRANSFORM_SY=1,
+                                       TRANSFORM_SZ=1)
+
+    # ROCKS
 
     spacing = 3
     for node_id, (pos, edge) in enumerate(nodes[:-1]):

@@ -1,3 +1,4 @@
+import glm
 import pymunk
 
 from scripts import (
@@ -7,6 +8,19 @@ from scripts import (
 from systems.base_sys import System
 from scripts.callbacks import *
 from scripts.components import *
+
+
+def sign(p1: list, p2: list, p3: list):
+    return (p1.x - p3.x) * (p2.z - p3.z) - (p2.x - p3.x) * (p1.z - p3.z)
+
+
+def PointInTriangle(pt: list, v1: list, v2: list, v3: list):
+    d1 = sign(pt, v1, v2)
+    d2 = sign(pt, v2, v3)
+    d3 = sign(pt, v3, v1)
+
+    return not ((d1 < 0) or (d2 < 0) or (d3 < 0) and
+                (d1 > 0) or (d2 > 0) or (d3 > 0))
 
 
 class PhysicsSys(System):
@@ -34,6 +48,13 @@ class PhysicsSys(System):
                           (.5, -.5),
                           (-.5, .5),
                           (.5, .5))
+
+    def get_altitude(self, p):
+        for a, b, c in self.engine.assets.river_faces:
+            if PointInTriangle(p, a, b, c):
+                print('colliding in the y, bb collision == True? calculate altitude')
+                break
+        return 0
 
     def update(self, ecs_data: ecs.ECS, dt: float):
         self.space.step(dt)
@@ -67,6 +88,13 @@ class PhysicsSys(System):
                         shape.body.angular_velocity += turn_force * dt
                         shape.body.angular_velocity *= 1 - (.9 * dt)
 
+            trans_data = ecs_data.get_component_data(ent_id, COMP_TRANSFORM)
+            if trans_data:
+                player_data[PLAYER_DY] -= 1 * dt
+                if trans_data[TRANSFORM_Y] < self.get_altitude(glm.vec3(trans_data[TRANSFORM_X:TRANSFORM_Z + 1])):
+                    player_data[PLAYER_DY] -= trans_data[TRANSFORM_Y] * 3 * dt
+                    player_data[PLAYER_DY] *= 1 - (.3 * dt)
+                trans_data[TRANSFORM_Y] += player_data[PLAYER_DY] * dt
 
     def add_physics_ent(self, ecs_data: ecs.ECS, ent_id: int):
         shape_data = ecs_data.get_component_data(ent_id, COMP_SHAPE)
@@ -169,9 +197,13 @@ class PhysicsSys(System):
         for ent_id in ecs_data.get_entities(COMP_SHAPE):
             shape_data = ecs_data.get_component_data(ent_id, COMP_SHAPE)
             if shape_data:
+                print(shape_data[SHAPE_TYPE])
                 self.add_physics_ent(ecs_data, ent_id)
 
-
+        # for a, b in self.engine.assets.segments:
+        #     segment = pymunk.Segment(self.space.static_body,
+        #                              a, b, .01)
+        #     self.space.add(segment)
 
     def save_level(self, ecs_data: ecs.ECS, filename: str):
         for ent_id in ecs_data.get_entities(COMP_SHAPE):
@@ -182,4 +214,3 @@ class PhysicsSys(System):
                     shape_data[SHAPE_DX] = shape.body.velocity.x
                     shape_data[SHAPE_DY] = shape.body.velocity.y
                     shape_data[SHAPE_DA] = shape.body.angular_velocity
-

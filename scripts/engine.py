@@ -54,7 +54,7 @@ class Engine:
         # self.load('levels/test_level.level')
 
         # self.dispatch(CB_SAVE_LEVEL, ['levels/test_level.level'])
-        # self.dispatch(CB_LOAD_LEVEL, ['levels/test_level.level'])
+        self.dispatch(CB_LOAD_LEVEL, ['levels/test_level.level'])
         self.dispatch(CB_WINDOW_RESIZE, [w, h])
 
         total_time = 0
@@ -69,6 +69,8 @@ class Engine:
             last_time = time
             time = glfwGetTime()
             dt = time - last_time
+            if dt > .02:
+                dt = .02
 
             # if total_time < 10:
             #     total_time += dt
@@ -133,5 +135,6 @@ class Engine:
 
     def save(self, filename):
         with open(filename, 'wb+') as f:
-            pickle.dump((self.assets.loaded_filenames,
+            pickle.dump((self.assets.loaded_meshes,
+                         self.assets.loaded_textures,
                          self.ecs_data.data), f)

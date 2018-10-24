@@ -28,7 +28,7 @@ class ObjFile:
 
         self.objects[self._current_object] = mesh
         # mesh.calculate_normals()
-        self.faces = []
+        # self.faces = []
 
     def __init__(self, filename, swapyz=False):
         """Loads a Wavefront OBJ file. """
