@@ -75,7 +75,7 @@ class RenderSys(System):
             glUniformMatrix4fv(self.view_loc, 1, GL_FALSE, glm.value_ptr(view))
             glUniformMatrix4fv(self.proj_loc, 1, GL_FALSE, glm.value_ptr(proj))
 
-            for ent_id in ecs_data.get_entities(COMP_MESH, COMP_TRANSFORM):
+            for ent_id in ecs_data.get_entities(COMP_MESH):
                 mesh_data = ecs_data.get_component_data(ent_id, COMP_MESH)
                 vao_data = self.engine.assets.get_mesh_data(mesh_data[MESH_ID])
 

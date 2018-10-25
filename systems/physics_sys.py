@@ -10,17 +10,8 @@ from scripts.callbacks import *
 from scripts.components import *
 
 
-def sign(p1: list, p2: list, p3: list):
-    return (p1.x - p3.x) * (p2.z - p3.z) - (p2.x - p3.x) * (p1.z - p3.z)
-
-
-def PointInTriangle(pt: list, v1: list, v2: list, v3: list):
-    d1 = sign(pt, v1, v2)
-    d2 = sign(pt, v2, v3)
-    d3 = sign(pt, v3, v1)
-
-    return not ((d1 < 0) or (d2 < 0) or (d3 < 0) and
-                (d1 > 0) or (d2 > 0) or (d3 > 0))
+def cross(a: glm.vec3, b: glm.vec3):
+    return glm.dot(a.xz, glm.vec2(-b.z, b.x))
 
 
 class PhysicsSys(System):
@@ -49,12 +40,15 @@ class PhysicsSys(System):
                           (-.5, .5),
                           (.5, .5))
 
-    def get_altitude(self, p):
+    def get_altitude(self, p: glm.vec3):
         for a, b, c in self.engine.assets.river_faces:
-            if PointInTriangle(p, a, b, c):
-                print('colliding in the y, bb collision == True? calculate altitude')
-                break
-        return 0
+            if min(a.y, b.y, c.y) - 8 < p.y < max(a.y, b.y, c.y):
+                ab = b - a
+                sign = cross(p - a, ab) > 0
+                if (cross(p - b, c - b) > 0) == sign and (cross(p - c, a - c) > 0) == sign:
+                    cr = glm.cross(ab, c - a)
+                    return -(cr.x * p.x + cr.z * p.z - glm.dot(cr, a)) / cr.y
+        return -1000
 
     def update(self, ecs_data: ecs.ECS, dt: float):
         self.space.step(dt)
@@ -90,10 +84,11 @@ class PhysicsSys(System):
 
             trans_data = ecs_data.get_component_data(ent_id, COMP_TRANSFORM)
             if trans_data:
-                player_data[PLAYER_DY] -= 1 * dt
-                if trans_data[TRANSFORM_Y] < self.get_altitude(glm.vec3(trans_data[TRANSFORM_X:TRANSFORM_Z + 1])):
-                    player_data[PLAYER_DY] -= trans_data[TRANSFORM_Y] * 3 * dt
-                    player_data[PLAYER_DY] *= 1 - (.3 * dt)
+                player_data[PLAYER_DY] -= 5 * dt
+                alt = self.get_altitude(glm.vec3(trans_data[TRANSFORM_X:TRANSFORM_Z + 1]))
+                if trans_data[TRANSFORM_Y] < alt:
+                    player_data[PLAYER_DY] -= (trans_data[TRANSFORM_Y] - alt) * 10 * dt
+                    player_data[PLAYER_DY] *= 1 - (3 * dt)
                 trans_data[TRANSFORM_Y] += player_data[PLAYER_DY] * dt
 
     def add_physics_ent(self, ecs_data: ecs.ECS, ent_id: int):
@@ -200,10 +195,10 @@ class PhysicsSys(System):
                 print(shape_data[SHAPE_TYPE])
                 self.add_physics_ent(ecs_data, ent_id)
 
-        # for a, b in self.engine.assets.segments:
-        #     segment = pymunk.Segment(self.space.static_body,
-        #                              a, b, .01)
-        #     self.space.add(segment)
+        for a, b in self.engine.assets.segments:
+            segment = pymunk.Segment(self.space.static_body,
+                                     a, b, .01)
+            self.space.add(segment)
 
     def save_level(self, ecs_data: ecs.ECS, filename: str):
         for ent_id in ecs_data.get_entities(COMP_SHAPE):

@@ -24,7 +24,7 @@ def test_level(engine):
                                        PLAYER_REVERSE_INPUT=0,
                                        PLAYER_REVERSE_FORCE=20,
                                        PLAYER_TURN_INPUT=0,
-                                       PLAYER_TURN_FORCE=100,
+                                       PLAYER_TURN_FORCE=1000,
                                        )
 
     engine.ecs_data.set_component_data(ent_id, COMP_INPUT,
@@ -101,30 +101,26 @@ def test_level(engine):
                                        )
 
 
-    engine.assets.load_river('models/test_river.obj')
+    engine.assets.load_river('models/test_mountain_river.obj')
     nodes = []
 
     # RIVER
 
     ent_id = engine.ecs_data.add_entity()
-    engine.ecs_data.add_components(ent_id,
-                                   COMP_MESH,
-                                   COMP_TRANSFORM)
+    engine.ecs_data.add_components(ent_id, COMP_MESH)
 
     engine.ecs_data.set_component_data(ent_id, COMP_MESH,
-                                       MESH_ID=engine.assets.get_mesh_id('models/test_river.obj'),
-                                       MESH_TEX_ID=engine.assets.get_texture_id('textures/water.png'),
+                                       MESH_ID=engine.assets.get_mesh_id('models/test_mountain_terrain.obj'),
+                                       MESH_TEX_ID=engine.assets.get_texture_id('textures/grass.png'),
                                        )
 
-    engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
-                                       TRANSFORM_X=0,
-                                       TRANSFORM_Y=0,
-                                       TRANSFORM_Z=0,
-                                       TRANSFORM_PITCH=0,
-                                       TRANSFORM_YAW=0,
-                                       TRANSFORM_SX=1,
-                                       TRANSFORM_SY=1,
-                                       TRANSFORM_SZ=1)
+    ent_id = engine.ecs_data.add_entity()
+    engine.ecs_data.add_components(ent_id, COMP_MESH)
+
+    engine.ecs_data.set_component_data(ent_id, COMP_MESH,
+                                       MESH_ID=engine.assets.get_mesh_id('models/test_mountain_river.obj'),
+                                       MESH_TEX_ID=engine.assets.get_texture_id('textures/water.png'),
+                                       )
 
     # ROCKS
 
