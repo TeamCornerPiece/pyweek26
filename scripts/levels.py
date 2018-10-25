@@ -28,7 +28,7 @@ def test_level(engine):
                                        )
 
     engine.ecs_data.set_component_data(ent_id, COMP_INPUT,
-                                       INPUT_ID=1,
+                                       INPUT_ID=0,
                                        INPUT_X=0,
                                        INPUT_Y=0)
 
@@ -78,18 +78,18 @@ def test_level(engine):
                                        CAMERA_DIST=10,
                                        CAMERA_DELTA_DIST=0,
                                        CAMERA_MIN_PITCH=glm.radians(15),
-                                       CAMERA_MAX_PITCH=glm.radians(60),
+                                       CAMERA_MAX_PITCH=glm.radians(85),
                                        )
 
     engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
-                                       TRANSFORM_X=1,
+                                       TRANSFORM_X=0,
                                        TRANSFORM_Y=1 * 5,
                                        TRANSFORM_Z=1 * 5,
                                        TRANSFORM_PITCH=30 / 57.3,
                                        TRANSFORM_YAW=0.0 / 57.3)
 
     engine.ecs_data.set_component_data(ent_id, COMP_INPUT,
-                                       INPUT_ID=1,
+                                       INPUT_ID=0,
                                        INPUT_X=0,
                                        INPUT_Y=0)
 

@@ -135,6 +135,9 @@ class InputProcessor:
         else:
             dx = x - self.last_x
             dy = y - self.last_y
+
+        dx *= 5
+        dy *= 2
         self.last_x = x
         self.last_y = y
 
