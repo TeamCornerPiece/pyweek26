@@ -34,7 +34,8 @@ def test_level(engine):
 
     engine.ecs_data.set_component_data(ent_id, COMP_MESH,
                                        MESH_ID=engine.assets.get_mesh_id('models/chaynik/Chaynik.obj'),
-                                       MESH_TEX_ID=engine.assets.get_texture_id('textures/teapot.png')
+                                       MESH_TEX_ID=engine.assets.get_texture_id('textures/teapot.png'),
+                                       MESH_SHADER_ID=0
                                        )
 
     engine.ecs_data.set_component_data(ent_id, COMP_TRANSFORM,
@@ -112,6 +113,7 @@ def test_level(engine):
     engine.ecs_data.set_component_data(ent_id, COMP_MESH,
                                        MESH_ID=engine.assets.get_mesh_id('models/test_mountain_terrain.obj'),
                                        MESH_TEX_ID=engine.assets.get_texture_id('textures/grass.png'),
+                                       MESH_SHADER_ID=0
                                        )
 
     ent_id = engine.ecs_data.add_entity()
@@ -120,6 +122,7 @@ def test_level(engine):
     engine.ecs_data.set_component_data(ent_id, COMP_MESH,
                                        MESH_ID=engine.assets.get_mesh_id('models/test_mountain_river.obj'),
                                        MESH_TEX_ID=engine.assets.get_texture_id('textures/water.png'),
+                                       MESH_SHADER_ID=1
                                        )
 
     # ROCKS

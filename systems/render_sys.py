@@ -31,11 +31,10 @@ class RenderSys(System):
         vertexShader = createShader(open('shaders/default.vert', 'r').read(), GL_VERTEX_SHADER)
         fragmentShader = createShader(open('shaders/default.frag', 'r').read(), GL_FRAGMENT_SHADER)
 
-        self.shader = createPipeline([vertexShader, fragmentShader])
+        waterVertexShader = createShader(open('shaders/water.vert', 'r').read(), GL_VERTEX_SHADER)
 
-        self.view_loc = glGetUniformLocation(self.shader, 'view')
-        self.proj_loc = glGetUniformLocation(self.shader, 'proj')
-        self.model_loc = glGetUniformLocation(self.shader, 'model')
+        self.shader = createPipeline([vertexShader, fragmentShader])
+        self.waterShader = createPipeline([waterVertexShader, fragmentShader])
 
         self.w = 1
         self.h = 1
@@ -72,12 +71,23 @@ class RenderSys(System):
                                    cam_data[CAMERA_NEAR],
                                    cam_data[CAMERA_FAR])
 
-            glUniformMatrix4fv(self.view_loc, 1, GL_FALSE, glm.value_ptr(view))
-            glUniformMatrix4fv(self.proj_loc, 1, GL_FALSE, glm.value_ptr(proj))
-
             for ent_id in ecs_data.get_entities(COMP_MESH):
                 mesh_data = ecs_data.get_component_data(ent_id, COMP_MESH)
                 vao_data = self.engine.assets.get_mesh_data(mesh_data[MESH_ID])
+
+                activeShader = self.shader
+                if mesh_data[MESH_SHADER_ID] == 1:
+                    activeShader = self.waterShader
+                else:
+                    activeShader = self.shader
+
+                glUseProgram(activeShader)
+
+                if activeShader == self.waterShader:
+                    glUniform1f(glGetUniformLocation(activeShader, 'time'), glfwGetTime())
+
+                glUniformMatrix4fv(glGetUniformLocation(activeShader, 'view'), 1, GL_FALSE, glm.value_ptr(view))
+                glUniformMatrix4fv(glGetUniformLocation(activeShader, 'proj'), 1, GL_FALSE, glm.value_ptr(proj))
 
                 spec = mesh_data[MESH_SPEC_R: MESH_SPEC_B + 1]
 
@@ -87,7 +97,7 @@ class RenderSys(System):
                     tex = self.engine.assets.get_texture_data(texHash)
                     glBindTexture(GL_TEXTURE_2D, tex)
                     # glActiveTexture(GL_TEXTURE0 + tex)
-                    glUniform1i(glGetUniformLocation(self.shader, 'albedoTexture'), 0)
+                    glUniform1i(glGetUniformLocation(activeShader, 'albedoTexture'), 0)
 
                 model = glm.mat4(1.0)
 
@@ -99,7 +109,7 @@ class RenderSys(System):
                     model = glm.rotate(model, trans_data[TRANSFORM_YAW], glm.vec3(0, 1, 0))
                     model = glm.scale(model, model_scale)
 
-                glUniformMatrix4fv(self.model_loc, 1, GL_FALSE, glm.value_ptr(model))
+                glUniformMatrix4fv(glGetUniformLocation(activeShader, 'model'), 1, GL_FALSE, glm.value_ptr(model))
 
                 for vao, index_count in vao_data:
                     glBindVertexArray(vao)

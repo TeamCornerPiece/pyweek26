@@ -87,6 +87,8 @@ class AssetManager:
                                              len(o.indices)))
         return mesh_id
 
+
+
     def get_texture_id(self, file_name: str):
         file_name = os.path.join(*file_name.split('/'))
         tex_id = hash_filename(file_name)

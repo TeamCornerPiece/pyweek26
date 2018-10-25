@@ -21,7 +21,7 @@ class InputProcessor:
         glEnable(GL_DEBUG_OUTPUT)
         glDebugMessageCallback(MessageCallback, None)
 
-        # glfwSetInputMode(engine.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
+        glfwSetInputMode(engine.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
 
         glfwSetKeyCallback(self.engine.window, on_key)
         glfwSetMouseButtonCallback(self.engine.window, on_mouse_button)
